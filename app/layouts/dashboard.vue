@@ -1,5 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-50 flex">
+
     <aside
       :class="['fixed inset-y-0 left-0 z-50 flex flex-col bg-white border-r border-gray-200 transition-all duration-300', ui.sidebarCollapsed ? 'w-16' : 'w-64', ui.sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0']">
       <div class="flex items-center gap-3 px-4 py-4 border-b border-gray-100">
@@ -50,7 +51,7 @@
           <h1 class="text-lg font-semibold text-gray-900 truncate">{{ ui.pageTitle }}</h1>
         </div>
         <div class="flex items-center gap-2">
-          <UButton icon="i-heroicons-bell" color="gray" variant="ghost" size="sm" />
+          <NotificationBell />
           <div class="flex items-center gap-2 cursor-pointer" @click="router.push('/profile')">
             <UAvatar :src="auth.user?.avatar_url" :alt="auth.user?.name" size="sm" />
             <span class="text-sm font-medium text-gray-700 hidden sm:block">{{ auth.user?.name?.split(' ')[0] }}</span>
@@ -70,6 +71,7 @@
 </template>
 
 <script setup>
+import NotificationBell from '~/components/NotificationBell.vue'
 import { useAuthStore } from '~/stores/auth'
 import { useUiStore } from '~/stores/ui'
 
