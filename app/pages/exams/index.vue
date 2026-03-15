@@ -165,7 +165,7 @@
                     @click.stop>
                     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
                         <h3 class="text-lg font-semibold text-gray-900">{{ editingExam ? 'Edit Exam' : 'Schedule Exam'
-                        }}</h3>
+                            }}</h3>
                         <button @click="showModal = false"
                             class="p-1 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
                             <UIcon name="i-heroicons-x-mark" class="w-5 h-5" />
@@ -489,6 +489,7 @@ const openCreate = () => {
 }
 
 const openEdit = (e) => {
+
     editingExam.value = e; errors.value = {}
     Object.assign(form, { title: e.title, course_id: e.course?.id, exam_type: e.exam_type, semester: e.semester, academic_year: e.academic_year, exam_date: e.exam_date || '', start_time: e.start_time || '', end_time: e.end_time || '', venue: e.venue || '', total_marks: e.total_marks, passing_marks: e.passing_marks, weightage: e.weightage, status: e.status })
     showModal.value = true
