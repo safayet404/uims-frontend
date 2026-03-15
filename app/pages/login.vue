@@ -46,7 +46,7 @@
             <p class="text-xs text-gray-400 font-medium">Demo accounts (password: password)</p>
             <div class="flex flex-wrap justify-center gap-2 mt-3">
               <UBadge v-for="acc in demoAccounts" :key="acc.email" :label="acc.role" color="white" variant="solid"
-                class="cursor-pointer capitalize ring-1 ring-gray-200 hover:bg-gray-50 transition-colors"
+                class="cursor-pointer capitalize text-white ring-1 ring-gray-200 hover:bg-gray-50 transition-colors"
                 @click="fillDemo(acc)" />
             </div>
           </div>

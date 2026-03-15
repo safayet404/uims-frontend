@@ -140,7 +140,7 @@
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-2">
                                     <div
-                                        class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                                        class="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
                                         <span class="text-xs font-bold text-indigo-700">{{ (log.user?.name ||
                                             'S')[0].toUpperCase() }}</span>
                                     </div>
@@ -171,7 +171,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 <span class="text-xs text-gray-400 whitespace-nowrap">{{ formatDate(log.created_at)
-                                }}</span>
+                                    }}</span>
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <button @click="viewDetail(log)"
@@ -208,7 +208,7 @@
         <!-- ── DETAIL MODAL ── -->
         <Teleport to="body">
             <div v-if="showDetailModal && activeLog"
-                class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4"
+                class="modal-overlay fixed inset-0 z-100 flex items-center justify-center p-4"
                 style="background:rgba(0,0,0,0.5)">
                 <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto"
                     @click.stop>
