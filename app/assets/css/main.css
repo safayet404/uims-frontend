@@ -1,2 +1,50 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+html {
+    color-scheme: light !important;
+}
+
+:root {
+    color-scheme: light !important;
+}
+
+body {
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Custom scrollbar */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #E5E7EB transparent;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D1D5DB;
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9CA3AF;
+}
+
+/* Page transitions */
+.page-enter-active,
+.page-leave-active {
+    transition: all 0.15s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+    opacity: 0;
+    transform: translateY(4px);
+}
