@@ -116,7 +116,7 @@
                         <td class="px-4 py-3">
                             <div class="flex items-center gap-3">
                                 <img :src="user.avatar_url" :alt="user.name"
-                                    class="w-8 h-8 rounded-full object-cover flex-shrink-0" />
+                                    class="w-8 h-8 rounded-full object-cover shrink-0" />
                                 <div class="min-w-0">
                                     <p class="text-sm font-semibold text-gray-900 truncate">{{ user.name }}</p>
                                     <p class="text-xs text-gray-400 truncate">{{ user.email }}</p>
@@ -130,7 +130,7 @@
                         </td>
                         <td class="px-4 py-3 hidden md:table-cell">
                             <span class="text-xs text-gray-500 font-mono">{{ user.employee_id || user.student_id || '—'
-                                }}</span>
+                            }}</span>
                         </td>
                         <td class="px-4 py-3 hidden lg:table-cell">
                             <span class="text-xs text-gray-500">{{ user.last_login_at ? formatDate(user.last_login_at) :
@@ -179,7 +179,7 @@
 
         <!-- CREATE/EDIT MODAL -->
         <Teleport to="body">
-            <div v-if="showModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4"
+            <div v-if="showModal" class="modal-overlay fixed inset-0 z-100 flex items-center justify-center p-4"
                 style="background:rgba(0,0,0,0.5)">
                 <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
                     @click.stop>
@@ -257,7 +257,7 @@
                                     placeholder="Min 8 characters"
                                     class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-gray-900" />
                                 <p v-if="formErrors.password" class="text-red-500 text-xs mt-1">{{ formErrors.password
-                                    }}</p>
+                                }}</p>
                             </div>
                         </div>
                     </div>
@@ -276,7 +276,7 @@
         <!-- VIEW MODAL -->
         <Teleport to="body">
             <div v-if="showViewModal && viewingUser"
-                class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4"
+                class="modal-overlay fixed inset-0 z-100 flex items-center justify-center p-4"
                 style="background:rgba(0,0,0,0.5)">
                 <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
                     @click.stop>
@@ -343,7 +343,7 @@
 
         <!-- RESET PASSWORD MODAL -->
         <Teleport to="body">
-            <div v-if="showResetModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4"
+            <div v-if="showResetModal" class="modal-overlay fixed inset-0 z-100 flex items-center justify-center p-4"
                 style="background:rgba(0,0,0,0.5)">
                 <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md" @click.stop>
                     <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
@@ -381,7 +381,7 @@
 
         <!-- DELETE MODAL -->
         <Teleport to="body">
-            <div v-if="showDeleteModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4"
+            <div v-if="showDeleteModal" class="modal-overlay fixed inset-0 z-100 flex items-center justify-center p-4"
                 style="background:rgba(0,0,0,0.5)">
                 <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md" @click.stop>
                     <div class="px-6 py-4 border-b border-gray-100">
@@ -389,7 +389,7 @@
                     </div>
                     <div class="p-6">
                         <p class="text-sm text-gray-600">Are you sure you want to delete <strong>{{ deletingUser?.name
-                                }}</strong>? This action cannot be undone.</p>
+                        }}</strong>? This action cannot be undone.</p>
                     </div>
                     <div class="flex justify-end gap-2 px-6 py-4 border-t border-gray-100">
                         <button @click="showDeleteModal = false"
