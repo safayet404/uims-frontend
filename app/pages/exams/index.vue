@@ -214,8 +214,9 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-gray-600 mb-1">Exam Date</label>
-                                <input v-model="form.exam_date" type="date"
+                                <input v-model="form.exam_date" type="date" placeholder="YYYY-MM-DD"
                                     class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900" />
+                                <pre>{{ form.exam_date }}</pre>
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-gray-600 mb-1">Venue</label>
@@ -224,12 +225,12 @@
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-gray-600 mb-1">Start Time</label>
-                                <input v-model="form.start_time" type="time"
+                                <input v-model="form.start_time" type="time" placeholder="09:00"
                                     class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900" />
                             </div>
                             <div>
                                 <label class="block text-xs font-medium text-gray-600 mb-1">End Time</label>
-                                <input v-model="form.end_time" type="time"
+                                <input v-model="form.end_time" type="time" placeholder="11:00"
                                     class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900" />
                             </div>
                             <div>
