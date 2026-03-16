@@ -113,7 +113,7 @@ const stats = computed(() => [
 ])
 
 const quickActions = [
-  { label: 'Add Student', to: '/students/create', icon: 'i-heroicons-user-plus', color: 'text-blue-600', bg: 'bg-blue-50' },
+  { label: 'Add Student', to: '/students', icon: 'i-heroicons-user-plus', color: 'text-blue-600', bg: 'bg-blue-50' },
   { label: 'Mark Attendance', to: '/attendance', icon: 'i-heroicons-check-circle', color: 'text-green-600', bg: 'bg-green-50' },
   { label: 'Enter Grades', to: '/grades', icon: 'i-heroicons-pencil-square', color: 'text-purple-600', bg: 'bg-purple-50' },
   { label: 'Collect Fee', to: '/fees', icon: 'i-heroicons-banknotes', color: 'text-amber-600', bg: 'bg-amber-50' },
