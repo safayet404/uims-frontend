@@ -33,12 +33,12 @@ export const useAuthStore = defineStore('auth', {
       const routes = {
         'super-admin': '/dashboard',
         'admin': '/dashboard',
-        'faculty': '/faculty/dashboard',
-        'student': '/student/dashboard',
-        'staff': '/staff/dashboard',
-        'librarian': '/library/dashboard',
-        'accountant': '/finance/dashboard',
-        'admission-officer': '/admissions/dashboard',
+        'faculty': '/dashboard',
+        'student': '/dashboard',
+        'staff': '/dashboard',
+        'librarian': '/dashboard',
+        'accountant': '/dashboard',
+        'admission-officer': '/dashboard',
       }
       return routes[role] || '/dashboard'
     },
