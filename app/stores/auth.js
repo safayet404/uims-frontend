@@ -10,6 +10,7 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     isAuthenticated: (state) => !!state.token && !!state.user,
     isOnline: (state) => state.user?.is_online || false,
+    isDemo: (state) => state.user?.is_demo || false,
     roles: (state) => state.user?.roles || [],
     permissions: (state) => state.user?.permissions || [],
 
@@ -52,6 +53,24 @@ export const useAuthStore = defineStore('auth', {
         const data = await $api('/auth/login', {
           method: 'POST',
           body: { email, password },
+        })
+        this.token = data.token
+        this.user = data.user
+        localStorage.setItem('unicore_token', data.token)
+        localStorage.setItem('unicore_user', JSON.stringify(data.user))
+        return data
+      } finally {
+        this.loading = false
+      }
+    },
+
+    async demoLogin(role) {
+      const { $api } = useNuxtApp()
+      this.loading = true
+      try {
+        const data = await $api('/auth/demo-login', {
+          method: 'POST',
+          body: { role },
         })
         this.token = data.token
         this.user = data.user

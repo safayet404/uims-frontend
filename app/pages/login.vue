@@ -18,14 +18,14 @@
           </div>
         </template>
 
-        <UForm :schema="schema" :state="form" @submit="handleLogin" class="space-y-6">
-          <UFormField label="Email" name="email" eager-validation>
+        <UForm :schema="schema" :state="form" :validate-on="['input', 'change']" class="space-y-6" @submit="handleLogin">
+          <UFormField label="Email" name="email">
             <UInput v-model="form.email" type="email" placeholder="your@unicore.sedu" icon="i-heroicons-envelope"
               size="lg" autofocus class="w-full" />
           </UFormField>
 
 
-          <UFormField label="Password" name="password" eager-validation>
+          <UFormField label="Password" name="password">
             <UInput class="w-full mt-5" v-model="form.password" :type="showPassword ? 'text' : 'password'"
               placeholder="Enter your password" icon="i-heroicons-lock-closed" size="lg"
               :ui="{ icon: { trailing: { pointer: '' } } }">
@@ -41,13 +41,12 @@
           </UButton>
         </UForm>
 
-        <template #footer>
+        <template v-if="demoRoles.length" #footer>
           <div class="text-center">
-            <p class="text-xs text-gray-400 font-medium">Demo accounts (password: password)</p>
+            <p class="text-xs text-gray-400 font-medium">Try the demo — one click, read-only</p>
             <div class="flex flex-wrap justify-center gap-2 mt-3">
-              <UBadge v-for="acc in demoAccounts" :key="acc.email" :label="acc.role" color="neutral" variant="outline"
-                class="cursor-pointer capitalize hover:bg-gray-50 transition-colors"
-                @click="fillDemo(acc)" />
+              <UButton v-for="role in demoRoles" :key="role" :label="role" color="neutral" variant="outline" size="xs"
+                class="capitalize" :disabled="auth.loading" @click="handleDemoLogin(role)" />
             </div>
           </div>
         </template>
@@ -93,17 +92,22 @@ const handleLogin = async () => {
   }
 }
 
-const demoAccounts = [
-  { role: 'super-admin', email: 'superadmin@unicore.edu' },
-  { role: 'admin', email: 'admin@unicore.edu' },
-  { role: 'faculty', email: 'faculty@unicore.edu' },
-  { role: 'student', email: 'student@unicore.edu' },
-  { role: 'librarian', email: 'librarian@unicore.edu' },
-  { role: 'accountant', email: 'accountant@unicore.edu' },
-]
+// Roles the backend offers as password-less, read-only demos (empty when the demo is off)
+const demoRoles = ref([])
+onMounted(async () => {
+  try {
+    const { $api } = useNuxtApp()
+    demoRoles.value = (await $api('/auth/demo-roles')).data || []
+  } catch { }
+})
 
-const fillDemo = (acc) => {
-  form.email = acc.email
-  form.password = 'password'
+const handleDemoLogin = async (role) => {
+  try {
+    await auth.demoLogin(role)
+    toast.add({ title: 'Demo mode', description: `Exploring as ${role}. Changes are disabled.`, color: 'info' })
+    router.push(auth.dashboardRoute)
+  } catch (err) {
+    toast.add({ title: 'Demo unavailable', description: err?.data?.message || 'Please try again later.', color: 'error' })
+  }
 }
 </script>

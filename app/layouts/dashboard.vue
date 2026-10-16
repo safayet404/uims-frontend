@@ -61,6 +61,11 @@
         </div>
       </header>
 
+      <div v-if="auth.isDemo" class="bg-amber-50 border-b border-amber-200 px-6 py-2 text-sm text-amber-800 flex items-center gap-2">
+        <UIcon name="i-heroicons-eye" class="w-4 h-4 shrink-0" />
+        You are exploring a read-only demo. Saving, editing and deleting are disabled.
+      </div>
+
       <main class="flex-1 p-6">
         <slot />
       </main>
