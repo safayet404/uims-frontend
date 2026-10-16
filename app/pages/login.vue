@@ -13,19 +13,19 @@
       <UCard class="shadow-xl ring-1 ring-gray-200">
         <template #header>
           <div class="text-center">
-            <h2 class="text-xl font-semibold text-white">Welcome back</h2>
+            <h2 class="text-xl font-semibold text-gray-900">Welcome back</h2>
             <p class="text-sm text-gray-500 mt-1">Sign in to your account</p>
           </div>
         </template>
 
         <UForm :schema="schema" :state="form" @submit="handleLogin" class="space-y-6">
-          <UFormGroup label="Email" name="email" eager-validation>
+          <UFormField label="Email" name="email" eager-validation>
             <UInput v-model="form.email" type="email" placeholder="your@unicore.sedu" icon="i-heroicons-envelope"
               size="lg" autofocus class="w-full" />
-          </UFormGroup>
+          </UFormField>
 
 
-          <UFormGroup label="Password" name="password" eager-validation>
+          <UFormField label="Password" name="password" eager-validation>
             <UInput class="w-full mt-5" v-model="form.password" :type="showPassword ? 'text' : 'password'"
               placeholder="Enter your password" icon="i-heroicons-lock-closed" size="lg"
               :ui="{ icon: { trailing: { pointer: '' } } }">
@@ -34,7 +34,7 @@
                   class="-me-1" @click="showPassword = !showPassword" />
               </template>
             </UInput>
-          </UFormGroup>
+          </UFormField>
 
           <UButton type="submit" block size="lg" :loading="auth.loading" class="mt-4 py-3 font-semibold">
             Sign In
@@ -45,8 +45,8 @@
           <div class="text-center">
             <p class="text-xs text-gray-400 font-medium">Demo accounts (password: password)</p>
             <div class="flex flex-wrap justify-center gap-2 mt-3">
-              <UBadge v-for="acc in demoAccounts" :key="acc.email" :label="acc.role" color="white" variant="solid"
-                class="cursor-pointer capitalize text-white ring-1 ring-gray-200 hover:bg-gray-50 transition-colors"
+              <UBadge v-for="acc in demoAccounts" :key="acc.email" :label="acc.role" color="neutral" variant="outline"
+                class="cursor-pointer capitalize hover:bg-gray-50 transition-colors"
                 @click="fillDemo(acc)" />
             </div>
           </div>
@@ -85,11 +85,11 @@ const schema = z.object({
 const handleLogin = async () => {
   try {
     await auth.login(form.email, form.password)
-    toast.add({ title: 'Welcome back!', description: `Logged in as ${auth.user?.name}`, color: 'green' })
+    toast.add({ title: 'Welcome back!', description: `Logged in as ${auth.user?.name}`, color: 'success' })
     router.push(auth.dashboardRoute)
   } catch (err) {
     const msg = err?.data?.message || 'Login failed. Please check your credentials.'
-    toast.add({ title: 'Login Failed', description: msg, color: 'red' })
+    toast.add({ title: 'Login Failed', description: msg, color: 'error' })
   }
 }
 

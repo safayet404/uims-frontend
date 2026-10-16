@@ -93,7 +93,7 @@ const canSee = (item) => {
 
 const handleLogout = async () => {
   await auth.logout()
-  toast.add({ title: 'Logged out', color: 'green' })
+  toast.add({ title: 'Logged out', color: 'success' })
   router.push('/login')
 }
 

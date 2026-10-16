@@ -612,12 +612,12 @@ const handleSubmit = async () => {
     saving.value = true
     try {
         await api.post('/admissions', form)
-        toast.add({ title: 'Application submitted', color: 'green' })
+        toast.add({ title: 'Application submitted', color: 'success' })
         showModal.value = false; fetchAdmissions(); fetchStats()
     } catch (err) {
         const errs = err?.data?.errors || {}
         errors.value = Object.fromEntries(Object.entries(errs).map(([k, v]) => [k, v[0]]))
-        if (err?.data?.message) toast.add({ title: err.data.message, color: 'red' })
+        if (err?.data?.message) toast.add({ title: err.data.message, color: 'error' })
     } finally { saving.value = false }
 }
 
@@ -629,10 +629,10 @@ const viewApplication = async (a) => {
 const quickAction = async (a, action) => {
     try {
         await api.patch(`/admissions/${a.id}/${action}`)
-        toast.add({ title: `Status updated`, color: 'green' })
+        toast.add({ title: `Status updated`, color: 'success' })
         fetchAdmissions(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Failed to update status', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to update status', color: 'error' })
     }
 }
 
@@ -643,17 +643,17 @@ const handleAccept = async () => {
     actioning.value = true
     try {
         await api.patch(`/admissions/${acceptingApp.value.id}/accept`, { remarks: acceptRemarks.value })
-        toast.add({ title: 'Application accepted', color: 'green' })
+        toast.add({ title: 'Application accepted', color: 'success' })
         showAcceptModal.value = false; fetchAdmissions(); fetchStats()
     } finally { actioning.value = false }
 }
 
 const handleReject = async () => {
-    if (!rejectReason.value) { toast.add({ title: 'Provide a reason', color: 'red' }); return }
+    if (!rejectReason.value) { toast.add({ title: 'Provide a reason', color: 'error' }); return }
     actioning.value = true
     try {
         await api.patch(`/admissions/${rejectingApp.value.id}/reject`, { reason: rejectReason.value })
-        toast.add({ title: 'Application rejected', color: 'green' })
+        toast.add({ title: 'Application rejected', color: 'success' })
         showRejectModal.value = false; fetchAdmissions(); fetchStats()
     } finally { actioning.value = false }
 }
@@ -662,10 +662,10 @@ const enrollApplicant = async (a) => {
     if (!confirm(`Enroll ${a.full_name} as a student? This will create a user account and student profile.`)) return
     try {
         await api.post(`/admissions/${a.id}/enroll`)
-        toast.add({ title: 'Student enrolled successfully!', description: 'Account created with default password: password', color: 'green' })
+        toast.add({ title: 'Student enrolled successfully!', description: 'Account created with default password: password', color: 'success' })
         fetchAdmissions(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Enrollment failed', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Enrollment failed', color: 'error' })
     }
 }
 

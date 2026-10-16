@@ -315,7 +315,7 @@ const markRead = async (n) => {
         n.is_read = true
         if (stats.value.unread > 0) stats.value.unread--
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Failed to mark as read', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to mark as read', color: 'error' })
     }
 }
 
@@ -324,7 +324,7 @@ const markAllRead = async () => {
         await api.patch('/notifications/mark-all-read')
         notifications.value.forEach(n => n.is_read = true)
         stats.value.unread = 0
-        toast.add({ title: 'All notifications marked as read', color: 'green' })
+        toast.add({ title: 'All notifications marked as read', color: 'success' })
     } catch { }
 }
 
@@ -332,10 +332,10 @@ const clearRead = async () => {
     if (!confirm('Clear all read notifications?')) return
     try {
         await api.delete('/notifications/clear-all')
-        toast.add({ title: 'Read notifications cleared', color: 'green' })
+        toast.add({ title: 'Read notifications cleared', color: 'success' })
         fetchNotifications(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Failed to clear notifications', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to clear notifications', color: 'error' })
     }
 }
 
@@ -345,16 +345,16 @@ const deleteNotification = async (n) => {
         notifications.value = notifications.value.filter(x => x.id !== n.id)
         fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Failed to delete notification', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to delete notification', color: 'error' })
     }
 }
 
 const handleSend = async () => {
-    if (!sendForm.title || !sendForm.message) { toast.add({ title: 'Fill required fields', color: 'red' }); return }
+    if (!sendForm.title || !sendForm.message) { toast.add({ title: 'Fill required fields', color: 'error' }); return }
     sending.value = true
     try {
         const res = await api.post('/notifications/send', sendForm)
-        toast.add({ title: res.message || 'Notification sent', color: 'green' })
+        toast.add({ title: res.message || 'Notification sent', color: 'success' })
         showSendModal.value = false
         Object.assign(sendForm, { title: '', message: '', type: 'announcement', category: 'general', target: 'all', role: 'student', action_url: '', action_label: '' })
     } finally { sending.value = false }

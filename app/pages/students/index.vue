@@ -650,16 +650,16 @@ const handleSubmit = async () => {
     try {
         if (editingStudent.value) {
             await api.put(`/students/${editingStudent.value.id}`, form)
-            toast.add({ title: 'Student updated', color: 'green' })
+            toast.add({ title: 'Student updated', color: 'success' })
         } else {
             await api.post('/students', form)
-            toast.add({ title: 'Student created', color: 'green' })
+            toast.add({ title: 'Student created', color: 'success' })
         }
         showModal.value = false; fetchStudents(); fetchStats()
     } catch (err) {
         const errs = err?.data?.errors || {}
         errors.value = Object.fromEntries(Object.entries(errs).map(([k, v]) => [k, v[0]]))
-        if (err?.data?.message) toast.add({ title: err.data.message, color: 'red' })
+        if (err?.data?.message) toast.add({ title: err.data.message, color: 'error' })
     } finally { saving.value = false }
 }
 
@@ -679,7 +679,7 @@ const handleDelete = async () => {
     deleting.value = true
     try {
         await api.delete(`/students/${deletingStudent.value.id}`)
-        toast.add({ title: 'Student deleted', color: 'green' })
+        toast.add({ title: 'Student deleted', color: 'success' })
         showDeleteModal.value = false; fetchStudents(); fetchStats()
     } finally { deleting.value = false }
 }
@@ -687,7 +687,7 @@ const handleDelete = async () => {
 const changeAcademicStatus = async (s, status) => {
     try {
         await api.patch(`/students/${s.id}/status`, { academic_status: status })
-        toast.add({ title: `Status updated to ${status}`, color: 'green' })
+        toast.add({ title: `Status updated to ${status}`, color: 'success' })
         if (viewingStudent.value?.id === s.id) viewingStudent.value = { ...viewingStudent.value, academic_status: status }
         fetchStudents(); fetchStats()
     } catch { }
@@ -702,7 +702,7 @@ const handleExport = async () => {
         const blob = await res.blob()
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a'); a.href = url; a.download = `students-${new Date().toISOString().slice(0, 10)}.xlsx`; a.click()
-        URL.revokeObjectURL(url); toast.add({ title: 'Exported', color: 'green' })
+        URL.revokeObjectURL(url); toast.add({ title: 'Exported', color: 'success' })
     } finally { exporting.value = false }
 }
 

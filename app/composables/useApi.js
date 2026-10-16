@@ -7,7 +7,7 @@ export const useApi = () => {
       return await $api(endpoint, options)
     } catch (err) {
       const msg = err?.data?.message || err?.message || 'Something went wrong.'
-      toast.add({ title: 'Error', description: msg, color: 'red' })
+      toast.add({ title: 'Error', description: msg, color: 'error' })
       throw err
     }
   }

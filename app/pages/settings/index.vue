@@ -303,9 +303,9 @@ const saveGroup = async (group) => {
     saving.value = group
     try {
         const res = await api.put(`/settings/${group}`, { settings: forms[group] })
-        toast.add({ title: res.message || 'Settings saved', color: 'green' })
+        toast.add({ title: res.message || 'Settings saved', color: 'success' })
     } catch {
-        toast.add({ title: 'Failed to save settings', color: 'red' })
+        toast.add({ title: 'Failed to save settings', color: 'error' })
     } finally { saving.value = '' }
 }
 

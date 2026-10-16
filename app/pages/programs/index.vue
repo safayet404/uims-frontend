@@ -306,7 +306,7 @@ const handleSubmit = async () => {
     try {
         if (editingProgram.value) await api.put(`/programs/${editingProgram.value.id}`, form)
         else await api.post('/programs', form)
-        toast.add({ title: editingProgram.value ? 'Program updated' : 'Program created', color: 'green' })
+        toast.add({ title: editingProgram.value ? 'Program updated' : 'Program created', color: 'success' })
         showModal.value = false; fetchPrograms()
     } catch (err) {
         const errs = err?.data?.errors || {}
@@ -320,10 +320,10 @@ const handleDelete = async () => {
     deleting.value = true
     try {
         await api.delete(`/programs/${deletingProgram.value.id}`)
-        toast.add({ title: 'Program deleted', color: 'green' })
+        toast.add({ title: 'Program deleted', color: 'success' })
         showDeleteModal.value = false; fetchPrograms()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Cannot delete', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Cannot delete', color: 'error' })
     } finally { deleting.value = false }
 }
 

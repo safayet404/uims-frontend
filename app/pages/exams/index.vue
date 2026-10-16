@@ -503,7 +503,7 @@ const handleSubmit = async () => {
     try {
         if (editingExam.value) await api.put(`/exams/${editingExam.value.id}`, form)
         else await api.post('/exams', form)
-        toast.add({ title: editingExam.value ? 'Exam updated' : 'Exam scheduled', color: 'green' })
+        toast.add({ title: editingExam.value ? 'Exam updated' : 'Exam scheduled', color: 'success' })
         showModal.value = false; fetchExams(); fetchStats()
     } catch (err) {
         const errs = err?.data?.errors || {}
@@ -526,7 +526,7 @@ const saveResults = async (publish) => {
     try {
         await api.post(`/exams/${activeExam.value.id}/results`, { results: resultStudents.value })
         if (publish) await api.patch(`/exams/${activeExam.value.id}/publish`)
-        toast.add({ title: publish ? 'Results saved & published' : 'Results saved', color: 'green' })
+        toast.add({ title: publish ? 'Results saved & published' : 'Results saved', color: 'success' })
         showResultsModal.value = false; fetchExams(); fetchStats()
     } finally { savingResults.value = false }
 }
@@ -537,7 +537,7 @@ const handleDelete = async () => {
     deleting.value = true
     try {
         await api.delete(`/exams/${deletingExam.value.id}`)
-        toast.add({ title: 'Exam deleted', color: 'green' })
+        toast.add({ title: 'Exam deleted', color: 'success' })
         showDeleteModal.value = false; fetchExams(); fetchStats()
     } finally { deleting.value = false }
 }

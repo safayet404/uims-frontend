@@ -397,7 +397,7 @@ const downloadPdf = async () => {
             headers: { Authorization: `Bearer ${token}` }
         })
 
-        if (!res.ok) { toast.add({ title: 'PDF export failed', color: 'red' }); return }
+        if (!res.ok) { toast.add({ title: 'PDF export failed', color: 'error' }); return }
 
         const blob = await res.blob()
         const url = URL.createObjectURL(blob)
@@ -406,7 +406,7 @@ const downloadPdf = async () => {
         a.download = `${activeReport.value}-report-${new Date().toISOString().slice(0, 10)}.pdf`
         a.click()
         URL.revokeObjectURL(url)
-        toast.add({ title: 'PDF downloaded', color: 'green' })
+        toast.add({ title: 'PDF downloaded', color: 'success' })
     } finally { exporting.value = false }
 }
 

@@ -475,7 +475,7 @@ const handleSubmit = async () => {
     try {
         if (editingSlot.value) await api.put(`/timetable/${editingSlot.value.id}`, form)
         else await api.post('/timetable', form)
-        toast.add({ title: editingSlot.value ? 'Slot updated' : 'Slot added', color: 'green' })
+        toast.add({ title: editingSlot.value ? 'Slot updated' : 'Slot added', color: 'success' })
         showModal.value = false; fetchTimetable(); fetchStats()
     } catch (err) {
         const msg = err?.data?.message || ''
@@ -493,10 +493,10 @@ const deleteSlot = async (s) => {
     if (!confirm(`Delete ${s.course?.code} slot on ${s.day_of_week}?`)) return
     try {
         await api.delete(`/timetable/${s.id}`)
-        toast.add({ title: 'Slot deleted', color: 'green' })
+        toast.add({ title: 'Slot deleted', color: 'success' })
         fetchTimetable(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Failed to delete slot', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to delete slot', color: 'error' })
     }
 }
 

@@ -692,15 +692,15 @@ const searchBooksForIssue = () => {
 }
 const selectBook = (b) => { issueForm.library_book_id = b.id; issueForm.selectedBookTitle = b.title; issueForm.bookSearch = ''; bookResults.value = [] }
 const handleIssue = async () => {
-    if (!issueForm.library_member_id || !issueForm.library_book_id) { toast.add({ title: 'Select member and book', color: 'red' }); return }
+    if (!issueForm.library_member_id || !issueForm.library_book_id) { toast.add({ title: 'Select member and book', color: 'error' }); return }
     issuing.value = true
     try {
         const res = await api.post('/library/issues', { library_book_id: issueForm.library_book_id, library_member_id: issueForm.library_member_id, due_date: issueForm.due_date || undefined })
-        toast.add({ title: res.message || 'Book issued', color: 'green' })
+        toast.add({ title: res.message || 'Book issued', color: 'success' })
         showIssueModal.value = false
         Object.assign(issueForm, { memberSearch: '', library_member_id: '', selectedMemberName: '', bookSearch: '', library_book_id: '', selectedBookTitle: '', due_date: '' })
         fetchBooks(); fetchIssues(); fetchStats()
-    } catch (err) { toast.add({ title: err?.data?.message || 'Failed', color: 'red' }) }
+    } catch (err) { toast.add({ title: err?.data?.message || 'Failed', color: 'error' }) }
     finally { issuing.value = false }
 }
 const openReturn = (issue) => { returningIssue.value = issue; returnForm.fine_paid = false; returnForm.remarks = ''; showReturnModal.value = true }
@@ -708,27 +708,27 @@ const handleReturn = async () => {
     returning.value = true
     try {
         const res = await api.patch(`/library/issues/${returningIssue.value.id}/return`, returnForm)
-        toast.add({ title: res.message || 'Book returned', color: 'green' })
+        toast.add({ title: res.message || 'Book returned', color: 'success' })
         showReturnModal.value = false; fetchBooks(); fetchIssues(); fetchStats()
     } finally { returning.value = false }
 }
 const openAddBook = () => { editingBook.value = null; Object.assign(bookForm, { title: '', author: '', isbn: '', publisher: '', category: 'textbook', edition: '', publish_year: '', department_id: '', total_copies: 1, price: '', shelf_location: '' }); showBookModal.value = true }
 const openEditBook = (b) => { editingBook.value = b; Object.assign(bookForm, { title: b.title, author: b.author, isbn: b.isbn || '', publisher: b.publisher || '', category: b.category, edition: b.edition || '', publish_year: b.publish_year || '', department_id: b.department?.id || '', total_copies: b.total_copies, price: b.price || '', shelf_location: b.shelf_location || '' }); showBookModal.value = true }
 const handleSaveBook = async () => {
-    if (!bookForm.title || !bookForm.author) { toast.add({ title: 'Fill required fields', color: 'red' }); return }
+    if (!bookForm.title || !bookForm.author) { toast.add({ title: 'Fill required fields', color: 'error' }); return }
     savingBook.value = true
     try {
         if (editingBook.value) await api.put(`/library/books/${editingBook.value.id}`, bookForm)
         else await api.post('/library/books', bookForm)
-        toast.add({ title: editingBook.value ? 'Book updated' : 'Book added', color: 'green' })
+        toast.add({ title: editingBook.value ? 'Book updated' : 'Book added', color: 'success' })
         showBookModal.value = false; fetchBooks(); fetchStats()
-    } catch (err) { toast.add({ title: err?.data?.message || 'Failed', color: 'red' }) }
+    } catch (err) { toast.add({ title: err?.data?.message || 'Failed', color: 'error' }) }
     finally { savingBook.value = false }
 }
 const deleteBook = async (b) => {
     if (!confirm(`Delete "${b.title}"?`)) return
-    try { await api.delete(`/library/books/${b.id}`); toast.add({ title: 'Deleted', color: 'green' }); fetchBooks(); fetchStats() }
-    catch (err) { toast.add({ title: err?.data?.message || 'Cannot delete', color: 'red' }) }
+    try { await api.delete(`/library/books/${b.id}`); toast.add({ title: 'Deleted', color: 'success' }); fetchBooks(); fetchStats() }
+    catch (err) { toast.add({ title: err?.data?.message || 'Cannot delete', color: 'error' }) }
 }
 let userTimer = null
 const searchUsers = () => {
@@ -739,13 +739,13 @@ const searchUsers = () => {
 }
 const selectUser = (u) => { memberForm.user_id = u.id; memberForm.selectedUserName = u.name; memberForm.userSearch = ''; userResults.value = [] }
 const handleAddMember = async () => {
-    if (!memberForm.user_id) { toast.add({ title: 'Select a user', color: 'red' }); return }
+    if (!memberForm.user_id) { toast.add({ title: 'Select a user', color: 'error' }); return }
     savingMember.value = true
     try {
         await api.post('/library/members', { user_id: memberForm.user_id, member_type: memberForm.member_type, max_books: memberForm.max_books })
-        toast.add({ title: 'Member added', color: 'green' })
+        toast.add({ title: 'Member added', color: 'success' })
         showMemberModal.value = false; fetchMembers(); fetchStats()
-    } catch (err) { toast.add({ title: err?.data?.message || 'Failed', color: 'red' }) }
+    } catch (err) { toast.add({ title: err?.data?.message || 'Failed', color: 'error' }) }
     finally { savingMember.value = false }
 }
 watch(activeTab, (tab) => { if (tab === 'issues') fetchIssues(); if (tab === 'members') fetchMembers() })

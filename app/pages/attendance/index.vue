@@ -338,7 +338,7 @@ const setStatus = (student, status) => { student.status = status }
 const markAll = (status) => { markStudents.value.forEach(s => s.status = status) }
 
 const saveAttendance = async (finalize) => {
-    if (!markForm.course_id || !markForm.date) { toast.add({ title: 'Select course and date', color: 'red' }); return }
+    if (!markForm.course_id || !markForm.date) { toast.add({ title: 'Select course and date', color: 'error' }); return }
     saving.value = true
     try {
         const res = await api.post('/attendance/mark', {
@@ -355,7 +355,7 @@ const saveAttendance = async (finalize) => {
             })),
         })
         const { summary } = res
-        toast.add({ title: finalize ? 'Attendance finalized' : 'Attendance saved', description: `Present: ${summary.present}, Absent: ${summary.absent}, Late: ${summary.late}`, color: 'green' })
+        toast.add({ title: finalize ? 'Attendance finalized' : 'Attendance saved', description: `Present: ${summary.present}, Absent: ${summary.absent}, Late: ${summary.late}`, color: 'success' })
         closeMarkModal()
         fetchSessions()
         fetchStats()

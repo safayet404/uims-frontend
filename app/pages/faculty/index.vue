@@ -621,12 +621,12 @@ const handleSubmit = async () => {
     try {
         if (editingFaculty.value) await api.put(`/faculty/${editingFaculty.value.id}`, form)
         else await api.post('/faculty', form)
-        toast.add({ title: editingFaculty.value ? 'Faculty updated' : 'Faculty created', color: 'green' })
+        toast.add({ title: editingFaculty.value ? 'Faculty updated' : 'Faculty created', color: 'success' })
         showModal.value = false; fetchFaculty(); fetchStats()
     } catch (err) {
         const errs = err?.data?.errors || {}
         errors.value = Object.fromEntries(Object.entries(errs).map(([k, v]) => [k, v[0]]))
-        if (err?.data?.message) toast.add({ title: err.data.message, color: 'red' })
+        if (err?.data?.message) toast.add({ title: err.data.message, color: 'error' })
     } finally { saving.value = false }
 }
 
@@ -641,7 +641,7 @@ const handleDelete = async () => {
     deleting.value = true
     try {
         await api.delete(`/faculty/${deletingFaculty.value.id}`)
-        toast.add({ title: 'Faculty deleted', color: 'green' })
+        toast.add({ title: 'Faculty deleted', color: 'success' })
         showDeleteModal.value = false; fetchFaculty(); fetchStats()
     } finally { deleting.value = false }
 }
@@ -649,7 +649,7 @@ const handleDelete = async () => {
 const changeStatus = async (f, status) => {
     try {
         await api.patch(`/faculty/${f.id}/status`, { employment_status: status })
-        toast.add({ title: `Status updated to ${status}`, color: 'green' })
+        toast.add({ title: `Status updated to ${status}`, color: 'success' })
         if (viewingFaculty.value?.id === f.id) viewingFaculty.value = { ...viewingFaculty.value, employment_status: status }
         fetchFaculty(); fetchStats()
     } catch { }
@@ -664,7 +664,7 @@ const handleExport = async () => {
         const blob = await res.blob()
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a'); a.href = url; a.download = `faculty-${new Date().toISOString().slice(0, 10)}.xlsx`; a.click()
-        URL.revokeObjectURL(url); toast.add({ title: 'Exported', color: 'green' })
+        URL.revokeObjectURL(url); toast.add({ title: 'Exported', color: 'success' })
     } finally { exporting.value = false }
 }
 

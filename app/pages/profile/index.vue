@@ -353,26 +353,26 @@ const saveProfile = async () => {
     try {
         await api.put('/auth/profile', profileForm)
         await auth.fetchMe()
-        toast.add({ title: 'Profile updated successfully', color: 'green' })
+        toast.add({ title: 'Profile updated successfully', color: 'success' })
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Failed to save profile', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to save profile', color: 'error' })
     } finally { savingProfile.value = false }
 }
 
 const changePassword = async () => {
     passwordErrors.value = {}
     if (passwordForm.password !== passwordForm.password_confirmation) {
-        toast.add({ title: 'Passwords do not match', color: 'red' }); return
+        toast.add({ title: 'Passwords do not match', color: 'error' }); return
     }
     savingPassword.value = true
     try {
         await api.put('/auth/change-password', passwordForm)
-        toast.add({ title: 'Password updated successfully', color: 'green' })
+        toast.add({ title: 'Password updated successfully', color: 'success' })
         Object.assign(passwordForm, { current_password: '', password: '', password_confirmation: '' })
     } catch (err) {
         const errs = err?.data?.errors || {}
         passwordErrors.value = Object.fromEntries(Object.entries(errs).map(([k, v]) => [k, v[0]]))
-        toast.add({ title: err?.data?.message || 'Failed to update password', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to update password', color: 'error' })
     } finally { savingPassword.value = false }
 }
 
@@ -381,16 +381,16 @@ const triggerAvatarUpload = () => avatarInput.value?.click()
 const handleAvatarUpload = async (e) => {
     const file = e.target.files?.[0]
     if (!file) return
-    if (file.size > 2 * 1024 * 1024) { toast.add({ title: 'Image must be under 2MB', color: 'red' }); return }
+    if (file.size > 2 * 1024 * 1024) { toast.add({ title: 'Image must be under 2MB', color: 'error' }); return }
     uploadingAvatar.value = true
     try {
         const formData = new FormData()
         formData.append('avatar', file)
         await api.upload('/auth/avatar', formData)
         await auth.fetchMe()
-        toast.add({ title: 'Avatar updated', color: 'green' })
+        toast.add({ title: 'Avatar updated', color: 'success' })
     } catch {
-        toast.add({ title: 'Failed to upload avatar', color: 'red' })
+        toast.add({ title: 'Failed to upload avatar', color: 'error' })
     } finally { uploadingAvatar.value = false; e.target.value = '' }
 }
 

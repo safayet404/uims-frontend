@@ -327,7 +327,7 @@ const handleCreate = async () => {
     creating.value = true
     try {
         await api.post('/roles', { name: createForm.name })
-        toast.add({ title: 'Role created', color: 'green' })
+        toast.add({ title: 'Role created', color: 'success' })
         showCreateModal.value = false; fetchRoles()
     } catch (err) {
         createErrors.value.name = err?.data?.errors?.name?.[0] || 'Error'
@@ -382,9 +382,9 @@ const savePermissions = async () => {
             await api.put(`/roles/${activeRole.value.id}`, { name: roleNameEdit.value })
         }
         await api.patch(`/roles/${activeRole.value.id}/permissions`, { permissions: permMatrix.value })
-        toast.add({ title: 'Permissions saved', color: 'green' })
+        toast.add({ title: 'Permissions saved', color: 'success' })
         showPermModal.value = false; fetchRoles()
-    } catch { toast.add({ title: 'Failed to save', color: 'red' }) }
+    } catch { toast.add({ title: 'Failed to save', color: 'error' }) }
     finally { saving.value = false }
 }
 
@@ -396,10 +396,10 @@ const handleClone = async () => {
     cloning.value = true
     try {
         await api.post(`/roles/${cloneSource.value.id}/clone`, { name: cloneName.value })
-        toast.add({ title: 'Role cloned', color: 'green' })
+        toast.add({ title: 'Role cloned', color: 'success' })
         showCloneModal.value = false; fetchRoles()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Clone failed', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Clone failed', color: 'error' })
     } finally { cloning.value = false }
 }
 

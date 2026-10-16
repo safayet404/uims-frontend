@@ -135,7 +135,7 @@ const markAllRead = async () => {
         notifications.value.forEach(n => n.is_read = true)
         unreadCount.value = 0
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Failed to mark notifications as read', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to mark notifications as read', color: 'error' })
     }
 }
 

@@ -223,7 +223,7 @@ const saveGrades = async () => {
                 remarks: s.remarks || null,
             })),
         })
-        toast.add({ title: 'Grades saved', color: 'green' })
+        toast.add({ title: 'Grades saved', color: 'success' })
         loadGrades(); fetchStats()
     } finally { saving.value = false }
 }
@@ -233,7 +233,7 @@ const publishGrades = async () => {
     publishing.value = true
     try {
         const res = await api.post('/grades/publish', { course_id: gradeForm.course_id, semester: gradeForm.semester, academic_year: gradeForm.academic_year })
-        toast.add({ title: res.message || 'Grades published', color: 'green' })
+        toast.add({ title: res.message || 'Grades published', color: 'success' })
         loadGrades(); fetchStats()
     } finally { publishing.value = false }
 }

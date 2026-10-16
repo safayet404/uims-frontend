@@ -674,11 +674,11 @@ const openPayment = (inv) => {
 }
 
 const handlePayment = async () => {
-    if (!payForm.amount || payForm.amount <= 0) { toast.add({ title: 'Enter valid amount', color: 'red' }); return }
+    if (!payForm.amount || payForm.amount <= 0) { toast.add({ title: 'Enter valid amount', color: 'error' }); return }
     paying.value = true
     try {
         await api.post(`/fees/invoices/${payingInvoice.value.id}/pay`, payForm)
-        toast.add({ title: 'Payment collected successfully', color: 'green' })
+        toast.add({ title: 'Payment collected successfully', color: 'success' })
         showPaymentModal.value = false
         fetchInvoices(); fetchStats(); fetchDefaulters()
     } finally { paying.value = false }
@@ -708,11 +708,11 @@ const selectStudentForInvoice = (s) => {
 }
 
 const handleCreateInvoice = async () => {
-    if (!invoiceForm.student_profile_id || !invoiceForm.amount || !invoiceForm.due_date) { toast.add({ title: 'Fill all required fields', color: 'red' }); return }
+    if (!invoiceForm.student_profile_id || !invoiceForm.amount || !invoiceForm.due_date) { toast.add({ title: 'Fill all required fields', color: 'error' }); return }
     creatingInvoice.value = true
     try {
         await api.post('/fees/invoices', { student_profile_id: invoiceForm.student_profile_id, fee_type: invoiceForm.fee_type, description: invoiceForm.description, amount: invoiceForm.amount, discount: invoiceForm.discount || 0, semester: invoiceForm.semester, academic_year: invoiceForm.academic_year, due_date: invoiceForm.due_date })
-        toast.add({ title: 'Invoice created', color: 'green' })
+        toast.add({ title: 'Invoice created', color: 'success' })
         showInvoiceModal.value = false; fetchInvoices(); fetchStats()
     } finally { creatingInvoice.value = false }
 }
@@ -731,19 +731,19 @@ const openEditStructure = (fs) => {
 }
 
 const handleSaveStructure = async () => {
-    if (!structureForm.name || !structureForm.amount) { toast.add({ title: 'Fill required fields', color: 'red' }); return }
+    if (!structureForm.name || !structureForm.amount) { toast.add({ title: 'Fill required fields', color: 'error' }); return }
     savingStructure.value = true
     try {
         if (editingStructure.value) await api.put(`/fees/structures/${editingStructure.value.id}`, structureForm)
         else await api.post('/fees/structures', structureForm)
-        toast.add({ title: editingStructure.value ? 'Structure updated' : 'Structure created', color: 'green' })
+        toast.add({ title: editingStructure.value ? 'Structure updated' : 'Structure created', color: 'success' })
         showStructureModal.value = false; fetchStructures()
     } finally { savingStructure.value = false }
 }
 
 const deleteStructure = async (fs) => {
     if (!confirm(`Delete "${fs.name}"?`)) return
-    try { await api.delete(`/fees/structures/${fs.id}`); toast.add({ title: 'Deleted', color: 'green' }); fetchStructures() } catch (err) { toast.add({ title: err?.data?.message || 'Failed to delete structure', color: 'red' }) }
+    try { await api.delete(`/fees/structures/${fs.id}`); toast.add({ title: 'Deleted', color: 'success' }); fetchStructures() } catch (err) { toast.add({ title: err?.data?.message || 'Failed to delete structure', color: 'error' }) }
 }
 
 watch(activeTab, (tab) => { if (tab === 'defaulters') fetchDefaulters() })

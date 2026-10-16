@@ -265,7 +265,7 @@ const handleSubmit = async () => {
     try {
         if (editingPerm.value) await api.put(`/permissions/${editingPerm.value.id}`, { name: form.name })
         else await api.post('/permissions', { name: form.name })
-        toast.add({ title: editingPerm.value ? 'Permission updated' : 'Permission created', color: 'green' })
+        toast.add({ title: editingPerm.value ? 'Permission updated' : 'Permission created', color: 'success' })
         showModal.value = false; fetchPermissions()
     } catch (err) {
         formErrors.value.name = err?.data?.errors?.name?.[0] || 'Error'
@@ -282,7 +282,7 @@ const handleBulkCreate = async () => {
     bulkCreating.value = true
     try {
         const res = await api.post('/permissions/bulk', { module: bulkForm.module, actions: bulkForm.actions })
-        toast.add({ title: `${res.created?.length || 0} permissions created`, color: 'green' })
+        toast.add({ title: `${res.created?.length || 0} permissions created`, color: 'success' })
         showBulkModal.value = false; fetchPermissions()
     } finally { bulkCreating.value = false }
 }
@@ -293,7 +293,7 @@ const handleDelete = async () => {
     deleting.value = true
     try {
         await api.delete(`/permissions/${deletingPerm.value.id}`)
-        toast.add({ title: 'Permission deleted', color: 'green' })
+        toast.add({ title: 'Permission deleted', color: 'success' })
         showDeleteModal.value = false; fetchPermissions()
     } finally { deleting.value = false }
 }

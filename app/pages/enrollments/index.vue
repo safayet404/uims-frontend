@@ -382,35 +382,35 @@ const openCreate = () => {
 
 const handleEnroll = async () => {
     if (!enrollForm.student_profile_id || !enrollForm.course_id || !enrollForm.semester || !enrollForm.academic_year) {
-        toast.add({ title: 'Please fill all required fields', color: 'red' }); return
+        toast.add({ title: 'Please fill all required fields', color: 'error' }); return
     }
     enrolling.value = true
     try {
         await api.post('/enrollments', { student_profile_id: enrollForm.student_profile_id, course_id: enrollForm.course_id, semester: enrollForm.semester, academic_year: enrollForm.academic_year, section: enrollForm.section })
-        toast.add({ title: 'Student enrolled', color: 'green' })
+        toast.add({ title: 'Student enrolled', color: 'success' })
         showModal.value = false; fetchEnrollments(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Enrollment failed', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Enrollment failed', color: 'error' })
     } finally { enrolling.value = false }
 }
 
 const approveOne = async (e) => {
     try {
         await api.patch(`/enrollments/${e.id}/approve`)
-        toast.add({ title: 'Enrollment approved', color: 'green' })
+        toast.add({ title: 'Enrollment approved', color: 'success' })
         fetchEnrollments(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Failed to approve enrollment', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to approve enrollment', color: 'error' })
     }
 }
 
 const bulkApprove = async () => {
     try {
         await api.post('/enrollments/bulk-approve', { enrollment_ids: selected.value })
-        toast.add({ title: `${selected.value.length} enrollments approved`, color: 'green' })
+        toast.add({ title: `${selected.value.length} enrollments approved`, color: 'success' })
         selected.value = []; fetchEnrollments(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Bulk approve failed', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Bulk approve failed', color: 'error' })
     }
 }
 
@@ -420,7 +420,7 @@ const handleReject = async () => {
     rejecting.value = true
     try {
         await api.patch(`/enrollments/${rejectingEnrollment.value.id}/reject`, { reason: rejectReason.value })
-        toast.add({ title: 'Enrollment rejected', color: 'green' })
+        toast.add({ title: 'Enrollment rejected', color: 'success' })
         showRejectModal.value = false; fetchEnrollments(); fetchStats()
     } finally { rejecting.value = false }
 }
@@ -429,10 +429,10 @@ const dropOne = async (e) => {
     if (!confirm(`Drop ${e.student?.name} from ${e.course?.code}?`)) return
     try {
         await api.patch(`/enrollments/${e.id}/drop`)
-        toast.add({ title: 'Enrollment dropped', color: 'green' })
+        toast.add({ title: 'Enrollment dropped', color: 'success' })
         fetchEnrollments(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Failed to drop enrollment', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Failed to drop enrollment', color: 'error' })
     }
 }
 

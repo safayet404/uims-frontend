@@ -525,7 +525,7 @@ const handleSubmit = async () => {
     try {
         if (editingUser.value) await api.put(`/users/${editingUser.value.id}`, form)
         else await api.post('/users', form)
-        toast.add({ title: editingUser.value ? 'User updated' : 'User created', color: 'green' })
+        toast.add({ title: editingUser.value ? 'User updated' : 'User created', color: 'success' })
         showModal.value = false; fetchUsers(); fetchStats()
     } catch (err) {
         const errs = err?.data?.errors || {}
@@ -544,7 +544,7 @@ const handleDelete = async () => {
     deleting.value = true
     try {
         await api.delete(`/users/${deletingUser.value.id}`)
-        toast.add({ title: 'User deleted', color: 'green' })
+        toast.add({ title: 'User deleted', color: 'success' })
         showDeleteModal.value = false; fetchUsers(); fetchStats()
     } finally { deleting.value = false }
 }
@@ -552,7 +552,7 @@ const handleDelete = async () => {
 const changeStatus = async (user, status) => {
     try {
         await api.patch(`/users/${user.id}/status`, { status })
-        toast.add({ title: `User ${status}`, color: 'green' })
+        toast.add({ title: `User ${status}`, color: 'success' })
         if (viewingUser.value?.id === user.id) viewingUser.value = { ...viewingUser.value, status }
         fetchUsers()
     } catch { }
@@ -563,11 +563,11 @@ const openResetPassword = (user) => {
 }
 
 const handleResetPassword = async () => {
-    if (newPassword.value !== newPasswordConfirm.value) { toast.add({ title: 'Passwords do not match', color: 'red' }); return }
+    if (newPassword.value !== newPasswordConfirm.value) { toast.add({ title: 'Passwords do not match', color: 'error' }); return }
     resetting.value = true
     try {
         await api.post(`/users/${resetUser.value.id}/reset-password`, { password: newPassword.value, password_confirmation: newPasswordConfirm.value })
-        toast.add({ title: 'Password reset', color: 'green' }); showResetModal.value = false
+        toast.add({ title: 'Password reset', color: 'success' }); showResetModal.value = false
     } finally { resetting.value = false }
 }
 
@@ -575,10 +575,10 @@ const bulkAction = async (action) => {
     if (!confirm(`${action} ${selected.value.length} users?`)) return
     try {
         await api.post('/users/bulk-action', { action, user_ids: selected.value })
-        toast.add({ title: `Bulk ${action} done`, color: 'green' })
+        toast.add({ title: `Bulk ${action} done`, color: 'success' })
         selected.value = []; fetchUsers(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Bulk action failed', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Bulk action failed', color: 'error' })
     }
 }
 
@@ -591,7 +591,7 @@ const handleExport = async () => {
         const blob = await res.blob()
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a'); a.href = url; a.download = `users-${new Date().toISOString().slice(0, 10)}.xlsx`; a.click()
-        URL.revokeObjectURL(url); toast.add({ title: 'Exported', color: 'green' })
+        URL.revokeObjectURL(url); toast.add({ title: 'Exported', color: 'success' })
     } finally { exporting.value = false }
 }
 

@@ -399,7 +399,7 @@ const handleSubmit = async () => {
     try {
         if (editingCourse.value) await api.put(`/courses/${editingCourse.value.id}`, form)
         else await api.post('/courses', form)
-        toast.add({ title: editingCourse.value ? 'Course updated' : 'Course created', color: 'green' })
+        toast.add({ title: editingCourse.value ? 'Course updated' : 'Course created', color: 'success' })
         showModal.value = false; fetchCourses(); fetchStats()
     } catch (err) {
         const errs = err?.data?.errors || {}
@@ -413,10 +413,10 @@ const handleDelete = async () => {
     deleting.value = true
     try {
         await api.delete(`/courses/${deletingCourse.value.id}`)
-        toast.add({ title: 'Course deleted', color: 'green' })
+        toast.add({ title: 'Course deleted', color: 'success' })
         showDeleteModal.value = false; fetchCourses(); fetchStats()
     } catch (err) {
-        toast.add({ title: err?.data?.message || 'Cannot delete', color: 'red' })
+        toast.add({ title: err?.data?.message || 'Cannot delete', color: 'error' })
     } finally { deleting.value = false }
 }
 
