@@ -77,10 +77,7 @@
                 </div>
             </div>
 
-            <div v-if="loadingGrades" class="p-8 text-center">
-                <div class="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto">
-                </div>
-            </div>
+            <TableSkeleton v-if="loadingGrades" />
             <table v-else class="w-full">
                 <thead class="border-b border-gray-100">
                     <tr>

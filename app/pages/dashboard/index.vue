@@ -15,13 +15,17 @@
     </div>
 
     <!-- Stats -->
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div v-if="loadingStats || hasStats" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
       <div v-for="stat in stats" :key="stat.label" class="bg-white rounded-xl p-5 border border-gray-200">
         <div class="flex items-center gap-4">
           <div :class="['w-12 h-12 rounded-xl flex items-center justify-center', stat.bg]">
             <UIcon :name="stat.icon" :class="['w-6 h-6', stat.color]" />
           </div>
-          <div>
+          <div v-if="loadingStats" class="space-y-2">
+            <USkeleton class="h-6 w-14" />
+            <USkeleton class="h-3 w-20" />
+          </div>
+          <div v-else>
             <p class="text-2xl font-bold text-gray-900">{{ stat.value }}</p>
             <p class="text-sm text-gray-500">{{ stat.label }}</p>
           </div>
@@ -36,8 +40,15 @@
           <h3 class="font-semibold text-gray-900">Recent Activity</h3>
           <NuxtLink to="/activity-logs" class="text-sm text-indigo-600 hover:underline">View all</NuxtLink>
         </div>
-        <div v-if="loadingLogs" class="space-y-3">
-          <USkeleton v-for="i in 5" :key="i" class="h-10 w-full" />
+        <div v-if="loadingLogs" class="space-y-4">
+          <div v-for="i in 5" :key="i" class="flex items-center gap-3">
+            <USkeleton class="w-8 h-8 rounded-full shrink-0" />
+            <div class="flex-1 space-y-2">
+              <USkeleton class="h-3" :style="{ width: `${50 + ((i * 13) % 35)}%` }" />
+              <USkeleton class="h-2.5 w-1/3" />
+            </div>
+            <USkeleton class="h-5 w-14 rounded-full" />
+          </div>
         </div>
         <div v-else class="space-y-2">
           <div v-for="log in recentLogs" :key="log.id"
@@ -87,7 +98,10 @@ const api = useApi()
 
 ui.setPageTitle('Dashboard')
 
-const loadingLogs = ref(false)
+// Start in the loading state so placeholders, not zeros or "No activity", show first
+const loadingStats = ref(true)
+const loadingLogs = ref(true)
+const hasStats = ref(false)
 const recentLogs = ref([])
 const dashStats = ref({
   total_users: 0,
@@ -121,19 +135,17 @@ const quickActions = [
   { label: 'View Reports', to: '/reports', icon: 'i-heroicons-chart-pie', color: 'text-indigo-600', bg: 'bg-indigo-50' },
 ]
 
-onMounted(async () => {
-  loadingLogs.value = true
-  try {
-    const [statsRes, logsRes] = await Promise.all([
-      api.get('/users/stats'),
-      api.get('/activity-logs', { per_page: 8 }),
-    ])
-    if (statsRes?.data) dashStats.value = statsRes.data
-    if (logsRes?.data) recentLogs.value = logsRes.data
-  } catch (e) {
-    console.error(e)
-  } finally {
-    loadingLogs.value = false
-  }
+// Load each panel independently: roles without users.read or activity-logs.read
+// get a 403 for that panel only, not for the whole dashboard
+onMounted(() => {
+  api.get('/users/stats')
+    .then((res) => { if (res?.data) { dashStats.value = res.data; hasStats.value = true } })
+    .catch(() => {})
+    .finally(() => { loadingStats.value = false })
+
+  api.get('/activity-logs', { per_page: 8 })
+    .then((res) => { if (res?.data) recentLogs.value = res.data })
+    .catch(() => {})
+    .finally(() => { loadingLogs.value = false })
 })
 </script>

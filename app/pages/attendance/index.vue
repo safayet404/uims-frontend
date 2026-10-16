@@ -57,10 +57,7 @@
 
         <!-- Sessions table -->
         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div v-if="loading" class="p-8 text-center">
-                <div class="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto">
-                </div>
-            </div>
+            <TableSkeleton v-if="loading" />
             <div v-else-if="!sessions.length" class="p-12 text-center">
                 <UIcon name="i-heroicons-check-circle" class="w-12 h-12 text-gray-300 mx-auto mb-3" />
                 <p class="text-gray-500 mb-3">No attendance sessions yet</p>

@@ -69,10 +69,7 @@
                 </div>
             </div>
 
-            <div v-if="loadingReport" class="p-8 text-center">
-                <div class="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto">
-                </div>
-            </div>
+            <TableSkeleton v-if="loadingReport" />
 
             <!-- ── STUDENTS REPORT ── -->
             <div v-else-if="activeReport === 'students' && reportData" class="p-6 space-y-5">

@@ -60,10 +60,7 @@
 
         <!-- Report table -->
         <div v-if="report.length || loading" class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-            <div v-if="loading" class="p-8 text-center">
-                <div class="w-6 h-6 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto">
-                </div>
-            </div>
+            <TableSkeleton v-if="loading" />
             <table v-else class="w-full">
                 <thead class="bg-gray-50 border-b border-gray-200">
                     <tr>
