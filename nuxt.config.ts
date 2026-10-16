@@ -13,10 +13,10 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
-  // The UI is designed for light mode only; ignore the OS dark preference
-  colorMode: {
-    preference: 'light',
-    fallback: 'light',
+  // The UI is designed for light mode only: disable Nuxt UI's color mode so
+  // neither the OS preference nor a previously stored choice turns it dark
+  ui: {
+    colorMode: false,
   },
 
   imports: {
