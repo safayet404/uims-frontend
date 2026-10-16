@@ -13,6 +13,12 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // The UI is designed for light mode only; ignore the OS dark preference
+  colorMode: {
+    preference: 'light',
+    fallback: 'light',
+  },
+
   imports: {
     dirs: ['stores', 'composables'],
   },
