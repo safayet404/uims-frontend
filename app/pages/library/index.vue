@@ -734,7 +734,7 @@ let userTimer = null
 const searchUsers = () => {
     clearTimeout(userTimer); userTimer = setTimeout(async () => {
         if (!memberForm.userSearch || memberForm.userSearch.length < 2) { userResults.value = []; return }
-        try { const res = await api.get('/users', { search: memberForm.userSearch, per_page: 5 }); userResults.value = res.data || [] } catch { }
+        try { const res = await api.get('/library/users/search', { q: memberForm.userSearch }); userResults.value = res.data || [] } catch { }
     }, 300)
 }
 const selectUser = (u) => { memberForm.user_id = u.id; memberForm.selectedUserName = u.name; memberForm.userSearch = ''; userResults.value = [] }
