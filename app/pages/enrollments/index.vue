@@ -406,8 +406,8 @@ const approveOne = async (e) => {
 
 const bulkApprove = async () => {
     try {
-        await api.post('/enrollments/bulk-approve', { enrollment_ids: selected.value })
-        toast.add({ title: `${selected.value.length} enrollments approved`, color: 'success' })
+        const res = await api.post('/enrollments/bulk-approve', { enrollment_ids: selected.value })
+        toast.add({ title: res.message, color: res.skipped ? 'warning' : 'success' })
         selected.value = []; fetchEnrollments(); fetchStats()
     } catch (err) {
         toast.add({ title: err?.data?.message || 'Bulk approve failed', color: 'error' })
