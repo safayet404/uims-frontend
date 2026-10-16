@@ -351,7 +351,7 @@ const populateForm = () => {
 const saveProfile = async () => {
     savingProfile.value = true
     try {
-        const res = await api.put('/auth/profile', profileForm)
+        await api.put('/auth/profile', profileForm)
         await auth.fetchMe()
         toast.add({ title: 'Profile updated successfully', color: 'green' })
     } catch (err) {

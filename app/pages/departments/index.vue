@@ -218,7 +218,8 @@ const handleSubmit = async () => {
     if (!form.code) { errors.value.code = 'Required'; return }
     saving.value = true
     try {
-        editingDept.value ? await api.put(`/departments/${editingDept.value.id}`, form) : await api.post('/departments', form)
+        if (editingDept.value) await api.put(`/departments/${editingDept.value.id}`, form)
+        else await api.post('/departments', form)
         toast.add({ title: editingDept.value ? 'Department updated' : 'Department created', color: 'green' })
         showModal.value = false; fetchDepartments()
     } catch (err) {

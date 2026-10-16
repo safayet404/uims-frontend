@@ -305,7 +305,6 @@ const permModules = ref([])
 const permMatrix = ref({})
 const history = ref([])
 
-const ACTIONS = ['read', 'create', 'edit', 'delete', 'other']
 
 const formatDate = (d) => dayjs(d).format('MMM D, YYYY HH:mm')
 

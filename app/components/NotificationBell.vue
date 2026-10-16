@@ -83,6 +83,7 @@
 
 <script setup>
 const api = useApi()
+const toast = useToast()
 const router = useRouter()
 const bellRef = ref(null)
 const showDropdown = ref(false)
@@ -133,7 +134,9 @@ const markAllRead = async () => {
         await api.patch('/notifications/mark-all-read')
         notifications.value.forEach(n => n.is_read = true)
         unreadCount.value = 0
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Failed to mark notifications as read', color: 'red' })
+    }
 }
 
 const handleNotificationClick = async (n) => {

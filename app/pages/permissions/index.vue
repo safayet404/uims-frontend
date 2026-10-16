@@ -263,9 +263,8 @@ const handleSubmit = async () => {
     if (!form.name) { formErrors.value.name = 'Required'; return }
     saving.value = true
     try {
-        editingPerm.value
-            ? await api.put(`/permissions/${editingPerm.value.id}`, { name: form.name })
-            : await api.post('/permissions', { name: form.name })
+        if (editingPerm.value) await api.put(`/permissions/${editingPerm.value.id}`, { name: form.name })
+        else await api.post('/permissions', { name: form.name })
         toast.add({ title: editingPerm.value ? 'Permission updated' : 'Permission created', color: 'green' })
         showModal.value = false; fetchPermissions()
     } catch (err) {

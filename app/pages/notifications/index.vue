@@ -314,7 +314,9 @@ const markRead = async (n) => {
         await api.patch(`/notifications/${n.id}/read`)
         n.is_read = true
         if (stats.value.unread > 0) stats.value.unread--
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Failed to mark as read', color: 'red' })
+    }
 }
 
 const markAllRead = async () => {
@@ -332,7 +334,9 @@ const clearRead = async () => {
         await api.delete('/notifications/clear-all')
         toast.add({ title: 'Read notifications cleared', color: 'green' })
         fetchNotifications(); fetchStats()
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Failed to clear notifications', color: 'red' })
+    }
 }
 
 const deleteNotification = async (n) => {
@@ -340,7 +344,9 @@ const deleteNotification = async (n) => {
         await api.delete(`/notifications/${n.id}`)
         notifications.value = notifications.value.filter(x => x.id !== n.id)
         fetchStats()
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Failed to delete notification', color: 'red' })
+    }
 }
 
 const handleSend = async () => {

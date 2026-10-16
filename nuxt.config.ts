@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@pinia/nuxt',
     '@vueuse/nuxt',
-    '@vercel/analytics'
+    '@vercel/analytics',
+    '@nuxt/eslint'
   ],
 
   css: ['~/assets/css/main.css'],

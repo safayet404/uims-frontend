@@ -718,7 +718,8 @@ const handleSaveBook = async () => {
     if (!bookForm.title || !bookForm.author) { toast.add({ title: 'Fill required fields', color: 'red' }); return }
     savingBook.value = true
     try {
-        editingBook.value ? await api.put(`/library/books/${editingBook.value.id}`, bookForm) : await api.post('/library/books', bookForm)
+        if (editingBook.value) await api.put(`/library/books/${editingBook.value.id}`, bookForm)
+        else await api.post('/library/books', bookForm)
         toast.add({ title: editingBook.value ? 'Book updated' : 'Book added', color: 'green' })
         showBookModal.value = false; fetchBooks(); fetchStats()
     } catch (err) { toast.add({ title: err?.data?.message || 'Failed', color: 'red' }) }

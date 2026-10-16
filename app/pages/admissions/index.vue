@@ -631,7 +631,9 @@ const quickAction = async (a, action) => {
         await api.patch(`/admissions/${a.id}/${action}`)
         toast.add({ title: `Status updated`, color: 'green' })
         fetchAdmissions(); fetchStats()
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Failed to update status', color: 'red' })
+    }
 }
 
 const openAccept = (a) => { acceptingApp.value = a; acceptRemarks.value = ''; showAcceptModal.value = true }

@@ -619,7 +619,8 @@ const handleSubmit = async () => {
     if (!form.designation) { errors.value.designation = 'Required'; return }
     saving.value = true
     try {
-        editingFaculty.value ? await api.put(`/faculty/${editingFaculty.value.id}`, form) : await api.post('/faculty', form)
+        if (editingFaculty.value) await api.put(`/faculty/${editingFaculty.value.id}`, form)
+        else await api.post('/faculty', form)
         toast.add({ title: editingFaculty.value ? 'Faculty updated' : 'Faculty created', color: 'green' })
         showModal.value = false; fetchFaculty(); fetchStats()
     } catch (err) {

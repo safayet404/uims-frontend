@@ -304,7 +304,8 @@ const handleSubmit = async () => {
     if (!form.department_id) { errors.value.department_id = 'Required'; return }
     saving.value = true
     try {
-        editingProgram.value ? await api.put(`/programs/${editingProgram.value.id}`, form) : await api.post('/programs', form)
+        if (editingProgram.value) await api.put(`/programs/${editingProgram.value.id}`, form)
+        else await api.post('/programs', form)
         toast.add({ title: editingProgram.value ? 'Program updated' : 'Program created', color: 'green' })
         showModal.value = false; fetchPrograms()
     } catch (err) {

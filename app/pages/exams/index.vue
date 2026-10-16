@@ -501,7 +501,8 @@ const handleSubmit = async () => {
     if (!form.course_id && !editingExam.value) { errors.value.course_id = 'Required'; return }
     saving.value = true
     try {
-        editingExam.value ? await api.put(`/exams/${editingExam.value.id}`, form) : await api.post('/exams', form)
+        if (editingExam.value) await api.put(`/exams/${editingExam.value.id}`, form)
+        else await api.post('/exams', form)
         toast.add({ title: editingExam.value ? 'Exam updated' : 'Exam scheduled', color: 'green' })
         showModal.value = false; fetchExams(); fetchStats()
     } catch (err) {

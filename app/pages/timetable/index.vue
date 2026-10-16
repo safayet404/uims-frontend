@@ -473,7 +473,8 @@ const handleSubmit = async () => {
     if (!form.end_time) { errors.value.end_time = 'Required'; return }
     saving.value = true
     try {
-        editingSlot.value ? await api.put(`/timetable/${editingSlot.value.id}`, form) : await api.post('/timetable', form)
+        if (editingSlot.value) await api.put(`/timetable/${editingSlot.value.id}`, form)
+        else await api.post('/timetable', form)
         toast.add({ title: editingSlot.value ? 'Slot updated' : 'Slot added', color: 'green' })
         showModal.value = false; fetchTimetable(); fetchStats()
     } catch (err) {
@@ -494,7 +495,9 @@ const deleteSlot = async (s) => {
         await api.delete(`/timetable/${s.id}`)
         toast.add({ title: 'Slot deleted', color: 'green' })
         fetchTimetable(); fetchStats()
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Failed to delete slot', color: 'red' })
+    }
 }
 
 onMounted(async () => {

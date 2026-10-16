@@ -734,7 +734,8 @@ const handleSaveStructure = async () => {
     if (!structureForm.name || !structureForm.amount) { toast.add({ title: 'Fill required fields', color: 'red' }); return }
     savingStructure.value = true
     try {
-        editingStructure.value ? await api.put(`/fees/structures/${editingStructure.value.id}`, structureForm) : await api.post('/fees/structures', structureForm)
+        if (editingStructure.value) await api.put(`/fees/structures/${editingStructure.value.id}`, structureForm)
+        else await api.post('/fees/structures', structureForm)
         toast.add({ title: editingStructure.value ? 'Structure updated' : 'Structure created', color: 'green' })
         showStructureModal.value = false; fetchStructures()
     } finally { savingStructure.value = false }
@@ -742,7 +743,7 @@ const handleSaveStructure = async () => {
 
 const deleteStructure = async (fs) => {
     if (!confirm(`Delete "${fs.name}"?`)) return
-    try { await api.delete(`/fees/structures/${fs.id}`); toast.add({ title: 'Deleted', color: 'green' }); fetchStructures() } catch { }
+    try { await api.delete(`/fees/structures/${fs.id}`); toast.add({ title: 'Deleted', color: 'green' }); fetchStructures() } catch (err) { toast.add({ title: err?.data?.message || 'Failed to delete structure', color: 'red' }) }
 }
 
 watch(activeTab, (tab) => { if (tab === 'defaulters') fetchDefaulters() })

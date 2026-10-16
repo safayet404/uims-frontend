@@ -399,7 +399,9 @@ const approveOne = async (e) => {
         await api.patch(`/enrollments/${e.id}/approve`)
         toast.add({ title: 'Enrollment approved', color: 'green' })
         fetchEnrollments(); fetchStats()
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Failed to approve enrollment', color: 'red' })
+    }
 }
 
 const bulkApprove = async () => {
@@ -407,7 +409,9 @@ const bulkApprove = async () => {
         await api.post('/enrollments/bulk-approve', { enrollment_ids: selected.value })
         toast.add({ title: `${selected.value.length} enrollments approved`, color: 'green' })
         selected.value = []; fetchEnrollments(); fetchStats()
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Bulk approve failed', color: 'red' })
+    }
 }
 
 const openReject = (e) => { rejectingEnrollment.value = e; rejectReason.value = ''; showRejectModal.value = true }
@@ -427,7 +431,9 @@ const dropOne = async (e) => {
         await api.patch(`/enrollments/${e.id}/drop`)
         toast.add({ title: 'Enrollment dropped', color: 'green' })
         fetchEnrollments(); fetchStats()
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Failed to drop enrollment', color: 'red' })
+    }
 }
 
 onMounted(async () => {

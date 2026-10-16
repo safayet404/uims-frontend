@@ -523,7 +523,8 @@ const handleSubmit = async () => {
     if (!editingUser.value && !form.password) { formErrors.value.password = 'Required'; return }
     saving.value = true
     try {
-        editingUser.value ? await api.put(`/users/${editingUser.value.id}`, form) : await api.post('/users', form)
+        if (editingUser.value) await api.put(`/users/${editingUser.value.id}`, form)
+        else await api.post('/users', form)
         toast.add({ title: editingUser.value ? 'User updated' : 'User created', color: 'green' })
         showModal.value = false; fetchUsers(); fetchStats()
     } catch (err) {
@@ -576,7 +577,9 @@ const bulkAction = async (action) => {
         await api.post('/users/bulk-action', { action, user_ids: selected.value })
         toast.add({ title: `Bulk ${action} done`, color: 'green' })
         selected.value = []; fetchUsers(); fetchStats()
-    } catch { }
+    } catch (err) {
+        toast.add({ title: err?.data?.message || 'Bulk action failed', color: 'red' })
+    }
 }
 
 const handleExport = async () => {

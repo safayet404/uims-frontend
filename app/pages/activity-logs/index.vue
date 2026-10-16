@@ -403,7 +403,7 @@ const clearFilters = () => {
 
 const viewDetail = (log) => { activeLog.value = log; showDetailModal.value = true }
 
-const filterByUser = (log) => {
+const filterByUser = () => {
     showDetailModal.value = false
     // Navigate to user activity if needed
 }
