@@ -315,7 +315,7 @@ const fetchSessions = async () => {
 }
 
 const fetchStats = async () => { try { const r = await api.get('/attendance/stats'); stats.value = r.data || {} } catch { } }
-const fetchCourses = async () => { try { const r = await api.get('/courses', { all: true }); courses.value = r.data || [] } catch { } }
+const fetchCourses = async () => { try { const r = await api.get('/courses', { all: true, teachable: true }); courses.value = r.data || [] } catch { } }
 
 const changePage = (p) => { filters.page = p; fetchSessions() }
 const clearFilters = () => { Object.assign(filters, { course_id: '', date_from: '', date_to: '', page: 1 }); fetchSessions() }

@@ -478,7 +478,7 @@ const fetchExams = async () => {
 }
 
 const fetchStats = async () => { try { const r = await api.get('/exams/stats'); stats.value = r.data || {} } catch { } }
-const fetchCourses = async () => { try { const r = await api.get('/courses', { all: true }); courses.value = r.data || [] } catch { } }
+const fetchCourses = async () => { try { const r = await api.get('/courses', { all: true, teachable: true }); courses.value = r.data || [] } catch { } }
 const changePage = (p) => { filters.page = p; fetchExams() }
 const clearFilters = () => { Object.assign(filters, { course_id: '', exam_type: '', status: '', page: 1 }); fetchExams() }
 

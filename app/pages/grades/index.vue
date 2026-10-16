@@ -197,7 +197,7 @@ const calcGradeForStudent = (s) => {
     else { s.grade_letter = 'F'; s.grade_point = 0.00 }
 }
 
-const fetchCourses = async () => { try { const r = await api.get('/courses', { all: true }); courses.value = r.data || [] } catch { } }
+const fetchCourses = async () => { try { const r = await api.get('/courses', { all: true, teachable: true }); courses.value = r.data || [] } catch { } }
 const fetchStats = async () => { try { const r = await api.get('/grades/stats'); stats.value = r.data || {} } catch { } }
 
 const loadGrades = async () => {

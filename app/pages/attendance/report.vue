@@ -159,7 +159,7 @@ const goodCount = computed(() => report.value.filter(r => r.status === 'good').l
 const warningCount = computed(() => report.value.filter(r => r.status === 'warning').length)
 const dangerCount = computed(() => report.value.filter(r => r.status === 'danger').length)
 
-const fetchCourses = async () => { try { const r = await api.get('/courses', { all: true }); courses.value = r.data || [] } catch { } }
+const fetchCourses = async () => { try { const r = await api.get('/courses', { all: true, teachable: true }); courses.value = r.data || [] } catch { } }
 
 const fetchReport = async () => {
     if (!filters.course_id) return
