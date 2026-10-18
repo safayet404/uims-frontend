@@ -5,7 +5,7 @@
         <div class="flex items-center justify-between">
             <div>
                 <h2 class="text-xl font-bold text-gray-900">Activity Logs</h2>
-                <p class="text-sm text-gray-500 mt-0.5">Track every action performed in the system</p>
+                <p class="text-sm text-gray-500 mt-0.5">Track Every action performed in the system</p>
             </div>
             <div class="flex items-center gap-2">
                 <!-- Auto refresh toggle -->
@@ -168,7 +168,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 <span class="text-xs text-gray-400 whitespace-nowrap">{{ formatDate(log.created_at)
-                                    }}</span>
+                                }}</span>
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <button @click="viewDetail(log)"
