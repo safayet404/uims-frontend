@@ -27,6 +27,8 @@ export default defineNuxtConfig({
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || 'http://localhost:8000/api',
       appName: 'UniCore',
+      // Set NUXT_PUBLIC_AVATAR_UPLOADS=false where the backend has no writable disk (Vercel)
+      avatarUploads: process.env.NUXT_PUBLIC_AVATAR_UPLOADS !== 'false',
     }
   },
 

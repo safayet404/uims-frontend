@@ -18,11 +18,11 @@
                     <div class="relative group">
                         <img :src="auth.user?.avatar_url" :alt="auth.user?.name"
                             class="w-20 h-20 rounded-2xl border-4 border-white object-cover shadow-md" />
-                        <button @click="triggerAvatarUpload"
+                        <button v-if="avatarUploads" @click="triggerAvatarUpload"
                             class="absolute inset-0 bg-black/50 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                             <UIcon name="i-heroicons-camera" class="w-5 h-5 text-white" />
                         </button>
-                        <input ref="avatarInput" type="file" accept="image/*" class="hidden"
+                        <input v-if="avatarUploads" ref="avatarInput" type="file" accept="image/*" class="hidden"
                             @change="handleAvatarUpload" />
                     </div>
                     <div class="flex-1 min-w-0 pt-12">
@@ -275,6 +275,7 @@ import { useUiStore } from '~/stores/ui'
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 
 const auth = useAuthStore()
+const avatarUploads = useRuntimeConfig().public.avatarUploads
 const ui = useUiStore()
 const api = useApi()
 const toast = useToast()
