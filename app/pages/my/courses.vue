@@ -22,8 +22,8 @@
             <h3 class="font-semibold text-gray-900 mt-0.5">{{ c.course.name }}</h3>
             <p class="text-sm text-gray-500 mt-1">{{ c.faculty || 'Faculty to be assigned' }}</p>
           </div>
-          <span :class="['text-xs font-medium px-2 py-1 rounded-full capitalize shrink-0', c.status === 'approved' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700']">
-            {{ c.status === 'approved' ? 'Enrolled' : 'Awaiting approval' }}
+          <span :class="['text-xs font-medium px-2 py-1 rounded-full shrink-0', statusBadge(c.status).class]">
+            {{ statusBadge(c.status).label }}
           </span>
         </div>
 
@@ -60,6 +60,11 @@ const api = useApi()
 const { attendanceTone } = useAcademicFormat()
 
 const courses = ref(null)
+
+const statusBadge = status => ({
+  approved: { label: 'Enrolled', class: 'bg-emerald-50 text-emerald-700' },
+  completed: { label: 'Result published', class: 'bg-sky-50 text-sky-700' },
+}[status] || { label: 'Awaiting approval', class: 'bg-amber-50 text-amber-700' })
 const term = ref(null)
 const termLabel = computed(() => term.value ? `${term.value.semester} · ${term.value.academic_year}` : 'Current semester')
 

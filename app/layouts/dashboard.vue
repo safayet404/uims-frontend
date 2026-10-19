@@ -54,7 +54,7 @@
           <NotificationBell />
           <div class="flex items-center gap-2 cursor-pointer" @click="router.push('/profile')">
             <UAvatar :src="auth.user?.avatar_url" :alt="auth.user?.name" size="sm" />
-            <span class="text-sm font-medium text-gray-700 hidden sm:block">{{ auth.user?.name?.split(' ')[0] }}</span>
+            <span class="text-sm font-medium text-gray-700 hidden sm:block">{{ auth.user?.name?.replace(/^(Dr|Prof)\.?\s+/i, '').split(' ')[0] }}</span>
           </div>
           <UButton icon="i-heroicons-arrow-right-on-rectangle" color="gray" variant="ghost" size="sm"
             @click="handleLogout" />
@@ -120,6 +120,13 @@ const navGroups = computed(() => [
     ]
   },
   {
+    label: 'Teaching',
+    items: [
+      { label: 'My Classes', to: '/teach/courses', icon: 'i-heroicons-academic-cap', roles: ['faculty'] },
+      { label: 'Teaching Routine', to: '/teach/routine', icon: 'i-heroicons-calendar-days', roles: ['faculty'] },
+    ]
+  },
+  {
     label: 'Academic',
     items: [
       { label: 'Students', to: '/students', icon: 'i-heroicons-user-group', permission: 'students.read' },
@@ -133,10 +140,10 @@ const navGroups = computed(() => [
     label: 'Operations',
     items: [
       { label: 'Enrollments', to: '/enrollments', icon: 'i-heroicons-pencil-square', permission: 'enrollments.read' },
-      { label: 'Timetable', to: '/timetable', icon: 'i-heroicons-calendar', permission: 'timetable.read', exceptRoles: ['student'] },
-      { label: 'Attendance', to: '/attendance', icon: 'i-heroicons-check-circle', permission: 'attendance.read' },
+      { label: 'Timetable', to: '/timetable', icon: 'i-heroicons-calendar', permission: 'timetable.read', exceptRoles: ['student', 'faculty'] },
+      { label: 'Attendance', to: '/attendance', icon: 'i-heroicons-check-circle', permission: 'attendance.read', exceptRoles: ['faculty'] },
       { label: 'Exams', to: '/exams', icon: 'i-heroicons-document-text', permission: 'exams.read' },
-      { label: 'Grades', to: '/grades', icon: 'i-heroicons-chart-bar', permission: 'grades.read' },
+      { label: 'Grades', to: '/grades', icon: 'i-heroicons-chart-bar', permission: 'grades.read', exceptRoles: ['faculty'] },
     ]
   },
   {

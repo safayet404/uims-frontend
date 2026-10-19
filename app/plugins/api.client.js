@@ -22,9 +22,9 @@ export default defineNuxtPlugin(() => {
         localStorage.removeItem('unicore_user')
         router.push('/login')
       }
-      if (response.status === 403) {
-        router.push('/unauthorized')
-      }
+      // 403 is not redirected: page access is checked by the route middleware,
+      // and a refused action (e.g. saving in the read-only demo) should show
+      // its message on the current page instead of leaving it
     },
   })
 

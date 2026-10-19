@@ -6,8 +6,13 @@ export const useApi = () => {
     try {
       return await $api(endpoint, options)
     } catch (err) {
-      const msg = err?.data?.message || err?.message || 'Something went wrong.'
-      toast.add({ title: 'Error', description: msg, color: 'error' })
+      const method = (options.method || 'GET').toUpperCase()
+      // A forbidden background read (e.g. a stats panel the role cannot see)
+      // is handled by the page; only report refused actions
+      if (!(err?.response?.status === 403 && method === 'GET')) {
+        const msg = err?.data?.message || err?.message || 'Something went wrong.'
+        toast.add({ title: err?.response?.status === 403 ? 'Not allowed' : 'Error', description: msg, color: 'error' })
+      }
       throw err
     }
   }
