@@ -22,7 +22,11 @@ export default defineNuxtPlugin(() => {
         localStorage.removeItem('unicore_user')
         router.push('/login')
       }
-      // 403 is not redirected: page access is checked by the route middleware,
+      if (response.status === 403 && response._data?.code === 'password_change_required') {
+        router.push('/change-password')
+        return
+      }
+      // Other 403s are not redirected: page access is checked by the route middleware,
       // and a refused action (e.g. saving in the read-only demo) should show
       // its message on the current page instead of leaving it
     },
