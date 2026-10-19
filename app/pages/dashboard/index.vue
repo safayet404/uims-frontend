@@ -1,5 +1,6 @@
 <template>
-  <div class="space-y-6">
+  <StudentDashboard v-if="auth.isStudent" />
+  <div v-else class="space-y-6">
     <!-- Welcome banner -->
     <div class="bg-linear-to-r from-indigo-600 to-blue-600 rounded-2xl p-6 text-white">
       <div class="flex items-center justify-between">
@@ -138,6 +139,9 @@ const quickActions = [
 // Load each panel independently: roles without users.read or activity-logs.read
 // get a 403 for that panel only, not for the whole dashboard
 onMounted(() => {
+  // Students get their own dashboard, which loads its own data
+  if (auth.isStudent) return
+
   api.get('/users/stats')
     .then((res) => { if (res?.data) { dashStats.value = res.data; hasStats.value = true } })
     .catch(() => {})

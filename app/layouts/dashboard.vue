@@ -15,11 +15,11 @@
       </div>
 
       <nav class="flex-1 overflow-y-auto py-4 px-2 space-y-1">
-        <template v-for="group in navGroups" :key="group.label">
+        <template v-for="group in visibleGroups" :key="group.label">
           <p v-if="!ui.sidebarCollapsed && group.label"
             class="px-3 pt-3 pb-1 text-xs font-semibold text-gray-400 uppercase tracking-wider">{{ group.label }}</p>
           <template v-for="item in group.items" :key="item.to">
-            <NuxtLink v-if="canSee(item)" :to="item.to"
+            <NuxtLink :to="item.to"
               :class="['flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors', isActive(item.to) ? 'bg-indigo-50 text-indigo-700' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900']">
               <UIcon :name="item.icon" class="w-5 h-5 shrink-0" />
               <span v-if="!ui.sidebarCollapsed">{{ item.label }}</span>
@@ -90,6 +90,7 @@ const isActive = (path) => route.path.startsWith(path)
 
 const canSee = (item) => {
   if (!auth.isAuthenticated) return false
+  if (item.exceptRoles && auth.hasRole(item.exceptRoles)) return false
   if (!item.permission && !item.roles) return true
   if (item.roles) return auth.hasRole(item.roles)
   if (item.permission) return auth.hasPermission(item.permission)
@@ -110,6 +111,15 @@ const navGroups = computed(() => [
     ]
   },
   {
+    label: 'My Studies',
+    items: [
+      { label: 'My Courses', to: '/my/courses', icon: 'i-heroicons-book-open', roles: ['student'] },
+      { label: 'Results', to: '/my/results', icon: 'i-heroicons-academic-cap', roles: ['student'] },
+      { label: 'Class Routine', to: '/my/routine', icon: 'i-heroicons-calendar-days', roles: ['student'] },
+      { label: 'My Fees', to: '/my/fees', icon: 'i-heroicons-banknotes', roles: ['student'] },
+    ]
+  },
+  {
     label: 'Academic',
     items: [
       { label: 'Students', to: '/students', icon: 'i-heroicons-user-group', permission: 'students.read' },
@@ -123,7 +133,7 @@ const navGroups = computed(() => [
     label: 'Operations',
     items: [
       { label: 'Enrollments', to: '/enrollments', icon: 'i-heroicons-pencil-square', permission: 'enrollments.read' },
-      { label: 'Timetable', to: '/timetable', icon: 'i-heroicons-calendar', permission: 'timetable.read' },
+      { label: 'Timetable', to: '/timetable', icon: 'i-heroicons-calendar', permission: 'timetable.read', exceptRoles: ['student'] },
       { label: 'Attendance', to: '/attendance', icon: 'i-heroicons-check-circle', permission: 'attendance.read' },
       { label: 'Exams', to: '/exams', icon: 'i-heroicons-document-text', permission: 'exams.read' },
       { label: 'Grades', to: '/grades', icon: 'i-heroicons-chart-bar', permission: 'grades.read' },
@@ -154,4 +164,9 @@ const navGroups = computed(() => [
     ]
   },
 ])
+
+// Hide items the user cannot open, and any group left with no items
+const visibleGroups = computed(() => navGroups.value
+  .map(group => ({ ...group, items: group.items.filter(canSee) }))
+  .filter(group => group.items.length))
 </script>
