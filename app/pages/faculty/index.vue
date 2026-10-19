@@ -371,6 +371,10 @@
                             <div class="flex-1">
                                 <h4 class="text-lg font-bold text-gray-900">{{ viewingFaculty.name }}</h4>
                                 <p class="text-sm text-gray-500">{{ viewingFaculty.email }}</p>
+                                <button v-if="canEmail" type="button" class="mt-1 inline-flex items-center gap-1 text-xs font-medium text-emerald-700 hover:underline"
+                                    @click="emailTo({ email: viewingFaculty.email, name: viewingFaculty.name, type: 'user', user_id: viewingFaculty.user_id, label: viewingFaculty.designation })">
+                                    <UIcon name="i-heroicons-envelope" class="w-3.5 h-3.5" /> Send email
+                                </button>
                                 <div class="flex flex-wrap gap-2 mt-2">
                                     <span
                                         :class="['inline-flex px-2 py-0.5 text-xs font-medium rounded-full', designationColor(viewingFaculty.designation)]">{{
@@ -478,6 +482,8 @@
             </div>
         </Teleport>
 
+        <CredentialsModal :credentials="newCredentials" @close="newCredentials = null" />
+        <ComposeEmailModal v-model:open="composeOpen" :to="composeTo" />
     </div>
 </template>
 
@@ -511,6 +517,16 @@ const deletingFaculty = ref(null)
 const errors = ref({})
 
 const filters = reactive({ search: '', department_id: '', designation: '', employment_status: '', page: 1 })
+
+// Login details of a just-created faculty member (temporary password shown once)
+const newCredentials = ref(null)
+
+// Personal email to a faculty member
+const { can } = usePermission()
+const canEmail = computed(() => can('communications.send'))
+const composeOpen = ref(false)
+const composeTo = ref(null)
+const emailTo = (recipient) => { composeTo.value = recipient; composeOpen.value = true }
 
 const form = reactive({
     name: '', email: '', phone: '', gender: '', password: '',
@@ -616,9 +632,13 @@ const handleSubmit = async () => {
     if (!form.designation) { errors.value.designation = 'Required'; return }
     saving.value = true
     try {
-        if (editingFaculty.value) await api.put(`/faculty/${editingFaculty.value.id}`, form)
-        else await api.post('/faculty', form)
-        toast.add({ title: editingFaculty.value ? 'Faculty updated' : 'Faculty created', color: 'success' })
+        if (editingFaculty.value) {
+            await api.put(`/faculty/${editingFaculty.value.id}`, form)
+            toast.add({ title: 'Faculty updated', color: 'success' })
+        } else {
+            const res = await api.post('/faculty', form)
+            newCredentials.value = { name: form.name, ...res.credentials }
+        }
         showModal.value = false; fetchFaculty(); fetchStats()
     } catch (err) {
         const errs = err?.data?.errors || {}

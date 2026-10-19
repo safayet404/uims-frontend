@@ -321,6 +321,26 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Guardian -->
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-700 mb-3 pb-1 border-b border-gray-100">Guardian</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Name</label>
+                                    <input v-model="form.guardian_name" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Phone</label>
+                                    <input v-model="form.guardian_phone" type="tel" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Email</label>
+                                    <input v-model="form.guardian_email" type="email" placeholder="For messages from the school" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900" />
+                                    <p v-if="errors.guardian_email" class="text-red-500 text-xs mt-1">{{ errors.guardian_email }}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="flex justify-end gap-2 px-6 py-4 border-t border-gray-100">
                         <button @click="showModal = false"
@@ -356,6 +376,16 @@
                             <div class="flex-1">
                                 <h4 class="text-lg font-bold text-gray-900">{{ viewingStudent.name }}</h4>
                                 <p class="text-sm text-gray-500">{{ viewingStudent.email }}</p>
+                                <div v-if="canEmail" class="flex flex-wrap gap-2 mt-2">
+                                    <button type="button" class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 hover:underline"
+                                        @click="emailTo({ email: viewingStudent.email, name: viewingStudent.name, type: 'user', user_id: viewingStudent.user_id, label: 'Student' })">
+                                        <UIcon name="i-heroicons-envelope" class="w-3.5 h-3.5" /> Email student
+                                    </button>
+                                    <button v-if="viewingStudent.guardian_email" type="button" class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 hover:underline"
+                                        @click="emailTo({ email: viewingStudent.guardian_email, name: viewingStudent.guardian_name || '', type: 'guardian', label: `Guardian of ${viewingStudent.name}` })">
+                                        <UIcon name="i-heroicons-envelope" class="w-3.5 h-3.5" /> Email guardian
+                                    </button>
+                                </div>
                                 <div class="flex flex-wrap gap-2 mt-2">
                                     <span
                                         class="inline-flex px-2 py-0.5 text-xs font-mono font-medium text-indigo-700 bg-indigo-50 rounded">{{
@@ -405,10 +435,15 @@
                         </div>
 
                         <!-- Guardian info (if detailed) -->
-                        <div v-if="viewingStudent.father_name || viewingStudent.mother_name"
+                        <div v-if="viewingStudent.father_name || viewingStudent.mother_name || viewingStudent.guardian_name || viewingStudent.guardian_email"
                             class="bg-gray-50 rounded-xl p-4">
                             <p class="text-xs font-semibold text-gray-600 mb-3">Guardian Information</p>
                             <div class="grid grid-cols-2 gap-3">
+                                <div v-if="viewingStudent.guardian_name || viewingStudent.guardian_email">
+                                    <p class="text-xs text-gray-400">Guardian</p>
+                                    <p class="text-sm font-medium text-gray-900">{{ viewingStudent.guardian_name || '—' }}</p>
+                                    <p class="text-xs text-gray-500">{{ [viewingStudent.guardian_phone, viewingStudent.guardian_email].filter(Boolean).join(' · ') }}</p>
+                                </div>
                                 <div v-if="viewingStudent.father_name">
                                     <p class="text-xs text-gray-400">Father</p>
                                     <p class="text-sm font-medium text-gray-900">{{ viewingStudent.father_name }}</p>
@@ -487,6 +522,8 @@
             </div>
         </Teleport>
 
+        <CredentialsModal :credentials="newCredentials" @close="newCredentials = null" />
+        <ComposeEmailModal v-model:open="composeOpen" :to="composeTo" />
     </div>
 </template>
 
@@ -527,7 +564,18 @@ const form = reactive({
     name: '', email: '', phone: '', gender: '', date_of_birth: '', password: '',
     student_id: '', department_id: '', program_id: '', batch: '',
     semester: '', section: '', admission_date: '', academic_status: 'regular', cgpa: '',
+    guardian_name: '', guardian_phone: '', guardian_email: '',
 })
+
+// Login details of a just-created student (temporary password shown once)
+const newCredentials = ref(null)
+
+// Personal email to the student or their guardian
+const { can } = usePermission()
+const canEmail = computed(() => can('communications.send'))
+const composeOpen = ref(false)
+const composeTo = ref(null)
+const emailTo = (recipient) => { composeTo.value = recipient; composeOpen.value = true }
 
 const semesters = ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th']
 const batches = ['2019', '2020', '2021', '2022', '2023', '2024', '2025']
@@ -619,7 +667,7 @@ const clearFilters = () => { Object.assign(filters, { search: '', department_id:
 // ── CRUD ──────────────────────────────────────────────────────
 const openCreate = () => {
     editingStudent.value = null; errors.value = {}
-    Object.assign(form, { name: '', email: '', phone: '', gender: '', date_of_birth: '', password: '', student_id: '', department_id: '', program_id: '', batch: '', semester: '', section: '', admission_date: '', academic_status: 'regular', cgpa: '' })
+    Object.assign(form, { name: '', email: '', phone: '', gender: '', date_of_birth: '', password: '', student_id: '', department_id: '', program_id: '', batch: '', semester: '', section: '', admission_date: '', academic_status: 'regular', cgpa: '', guardian_name: '', guardian_phone: '', guardian_email: '' })
     showModal.value = true
 }
 
@@ -631,6 +679,7 @@ const openEdit = (s) => {
         student_id: s.student_id, department_id: s.department?.id || '', program_id: s.program?.id || '',
         batch: s.batch || '', semester: s.semester || '', section: s.section || '',
         admission_date: s.admission_date || '', academic_status: s.academic_status, cgpa: s.cgpa || '',
+        guardian_name: s.guardian_name || '', guardian_phone: s.guardian_phone || '', guardian_email: s.guardian_email || '',
     })
     showModal.value = true
 }
@@ -649,8 +698,8 @@ const handleSubmit = async () => {
             await api.put(`/students/${editingStudent.value.id}`, form)
             toast.add({ title: 'Student updated', color: 'success' })
         } else {
-            await api.post('/students', form)
-            toast.add({ title: 'Student created', color: 'success' })
+            const res = await api.post('/students', form)
+            newCredentials.value = { name: form.name, ...res.credentials }
         }
         showModal.value = false; fetchStudents(); fetchStats()
     } catch (err) {

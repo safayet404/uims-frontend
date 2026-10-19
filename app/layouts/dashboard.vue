@@ -157,6 +157,7 @@ const navGroups = computed(() => [
     items: [
       { label: 'Admissions', to: '/admissions', icon: 'i-heroicons-inbox-arrow-down', permission: 'admissions.read' },
       { label: 'Library', to: '/library', icon: 'i-heroicons-book-open', permission: 'library.read' },
+      { label: 'Emails', to: '/communications', icon: 'i-heroicons-envelope', permission: 'communications.send' },
     ]
   },
   {

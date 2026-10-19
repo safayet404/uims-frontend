@@ -258,6 +258,10 @@
                                     <p class="font-medium">{{ viewingApp.guardian_phone || '—' }}</p>
                                 </div>
                                 <div>
+                                    <p class="text-xs text-gray-400">Guardian Email</p>
+                                    <p class="font-medium break-all">{{ viewingApp.guardian_email || '—' }}</p>
+                                </div>
+                                <div>
                                     <p class="text-xs text-gray-400">Family Income</p>
                                     <p class="font-medium">৳{{ viewingApp.family_income ?
                                         Number(viewingApp.family_income).toLocaleString() : '—' }}</p>
@@ -396,6 +400,25 @@
                             </div>
                         </div>
 
+                        <!-- Guardian -->
+                        <div>
+                            <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Guardian</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Father's name</label>
+                                    <input v-model="form.father_name" autocomplete="new-password" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Guardian phone</label>
+                                    <input v-model="form.guardian_phone" type="tel" autocomplete="new-password" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900" />
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-gray-600 mb-1">Guardian email</label>
+                                    <input v-model="form.guardian_email" type="email" autocomplete="new-password" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900" />
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Application -->
                         <div>
                             <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Application
@@ -475,35 +498,7 @@
             </div>
         </Teleport>
 
-        <!-- NEW STUDENT CREDENTIALS (shown once) -->
-        <Teleport to="body">
-            <div v-if="credentials" class="modal-overlay fixed inset-0 z-100 flex items-center justify-center p-4"
-                style="background:rgba(0,0,0,0.5)">
-                <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md" @click.stop>
-                    <div class="px-6 py-4 border-b border-gray-100">
-                        <h3 class="text-lg font-semibold text-green-700">Student account created</h3>
-                        <p class="text-sm text-gray-500 mt-1">{{ credentials.name }}</p>
-                    </div>
-                    <div class="p-6 space-y-3">
-                        <div v-for="row in credentialRows" :key="row.label" class="flex items-center justify-between gap-3 rounded-lg bg-gray-50 px-4 py-3">
-                            <div class="min-w-0">
-                                <p class="text-xs text-gray-500">{{ row.label }}</p>
-                                <p class="font-mono text-sm font-semibold text-gray-900 truncate">{{ row.value }}</p>
-                            </div>
-                            <button type="button" class="text-xs font-medium text-green-700 hover:underline shrink-0" @click="copy(row.value)">Copy</button>
-                        </div>
-                        <p class="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
-                            Give these to the student now — the temporary password is shown only once.
-                            They will be asked to choose their own password the first time they sign in.
-                        </p>
-                    </div>
-                    <div class="flex justify-end px-6 py-4 border-t border-gray-100">
-                        <button @click="credentials = null"
-                            class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Done</button>
-                    </div>
-                </div>
-            </div>
-        </Teleport>
+        <CredentialsModal :credentials="credentials" @close="credentials = null" />
 
         <!-- REJECT MODAL -->
         <Teleport to="body">
@@ -562,19 +557,6 @@ const showViewModal = ref(false)
 const showAcceptModal = ref(false)
 // Login details of a just-enrolled student; the temporary password is never shown again
 const credentials = ref(null)
-const credentialRows = computed(() => credentials.value ? [
-    { label: 'Student ID (login)', value: credentials.value.login },
-    { label: 'Email', value: credentials.value.email },
-    { label: 'Temporary password', value: credentials.value.temporary_password },
-] : [])
-const copy = async (value) => {
-    try {
-        await navigator.clipboard.writeText(value)
-        toast.add({ title: 'Copied', color: 'success' })
-    } catch {
-        toast.add({ title: 'Could not copy — select the text instead', color: 'warning' })
-    }
-}
 const showRejectModal = ref(false)
 
 const viewingApp = ref(null)
@@ -585,7 +567,7 @@ const rejectReason = ref('')
 const errors = ref({})
 
 const filters = reactive({ search: '', status: '', department_id: '', page: 1 })
-const form = reactive({ first_name: '', last_name: '', email: '', phone: '', gender: '', date_of_birth: '', ssc_gpa: '', hsc_gpa: '', hsc_group: '', hsc_year: '', department_id: '', program_id: '', semester: 'Spring 2025', academic_year: '2024-2025' })
+const form = reactive({ first_name: '', last_name: '', email: '', phone: '', gender: '', date_of_birth: '', ssc_gpa: '', hsc_gpa: '', hsc_group: '', hsc_year: '', father_name: '', guardian_phone: '', guardian_email: '', department_id: '', program_id: '', semester: 'Spring 2025', academic_year: '2024-2025' })
 
 const pipeline = [
     { key: 'total', label: 'Total', color: 'text-gray-900' },
@@ -642,7 +624,7 @@ const clearFilters = () => { Object.assign(filters, { search: '', status: '', de
 
 const openCreate = () => {
     errors.value = {}
-    Object.assign(form, { first_name: '', last_name: '', email: '', phone: '', gender: '', date_of_birth: '', ssc_gpa: '', hsc_gpa: '', hsc_group: '', hsc_year: '', department_id: '', program_id: '', semester: 'Spring 2025', academic_year: '2024-2025' })
+    Object.assign(form, { first_name: '', last_name: '', email: '', phone: '', gender: '', date_of_birth: '', ssc_gpa: '', hsc_gpa: '', hsc_group: '', hsc_year: '', father_name: '', guardian_phone: '', guardian_email: '', department_id: '', program_id: '', semester: 'Spring 2025', academic_year: '2024-2025' })
     showModal.value = true
 }
 
