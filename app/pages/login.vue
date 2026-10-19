@@ -98,6 +98,9 @@
             </UFormField>
 
             <UFormField label="Password" name="password" :ui="fieldUi">
+              <template #hint>
+                <NuxtLink to="/forgot-password" class="text-sm font-medium text-emerald-700 hover:underline">Forgot password?</NuxtLink>
+              </template>
               <UInput v-model="form.password" :type="showPassword ? 'text' : 'password'" placeholder="Enter your password"
                 icon="i-heroicons-lock-closed" size="xl" autocomplete="current-password" class="w-full" :ui="inputUi">
                 <template #trailing>
