@@ -475,6 +475,36 @@
             </div>
         </Teleport>
 
+        <!-- NEW STUDENT CREDENTIALS (shown once) -->
+        <Teleport to="body">
+            <div v-if="credentials" class="modal-overlay fixed inset-0 z-100 flex items-center justify-center p-4"
+                style="background:rgba(0,0,0,0.5)">
+                <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-md" @click.stop>
+                    <div class="px-6 py-4 border-b border-gray-100">
+                        <h3 class="text-lg font-semibold text-green-700">Student account created</h3>
+                        <p class="text-sm text-gray-500 mt-1">{{ credentials.name }}</p>
+                    </div>
+                    <div class="p-6 space-y-3">
+                        <div v-for="row in credentialRows" :key="row.label" class="flex items-center justify-between gap-3 rounded-lg bg-gray-50 px-4 py-3">
+                            <div class="min-w-0">
+                                <p class="text-xs text-gray-500">{{ row.label }}</p>
+                                <p class="font-mono text-sm font-semibold text-gray-900 truncate">{{ row.value }}</p>
+                            </div>
+                            <button type="button" class="text-xs font-medium text-green-700 hover:underline shrink-0" @click="copy(row.value)">Copy</button>
+                        </div>
+                        <p class="rounded-lg bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                            Give these to the student now — the temporary password is shown only once.
+                            They will be asked to choose their own password the first time they sign in.
+                        </p>
+                    </div>
+                    <div class="flex justify-end px-6 py-4 border-t border-gray-100">
+                        <button @click="credentials = null"
+                            class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-lg hover:bg-green-700">Done</button>
+                    </div>
+                </div>
+            </div>
+        </Teleport>
+
         <!-- REJECT MODAL -->
         <Teleport to="body">
             <div v-if="showRejectModal" class="modal-overlay fixed inset-0 z-100 flex items-center justify-center p-4"
@@ -530,6 +560,21 @@ const pagination = ref({ total: 0, current_page: 1, last_page: 1 })
 const showModal = ref(false)
 const showViewModal = ref(false)
 const showAcceptModal = ref(false)
+// Login details of a just-enrolled student; the temporary password is never shown again
+const credentials = ref(null)
+const credentialRows = computed(() => credentials.value ? [
+    { label: 'Student ID (login)', value: credentials.value.login },
+    { label: 'Email', value: credentials.value.email },
+    { label: 'Temporary password', value: credentials.value.temporary_password },
+] : [])
+const copy = async (value) => {
+    try {
+        await navigator.clipboard.writeText(value)
+        toast.add({ title: 'Copied', color: 'success' })
+    } catch {
+        toast.add({ title: 'Could not copy — select the text instead', color: 'warning' })
+    }
+}
 const showRejectModal = ref(false)
 
 const viewingApp = ref(null)
@@ -658,12 +703,10 @@ const handleReject = async () => {
 const enrollApplicant = async (a) => {
     if (!confirm(`Enroll ${a.full_name} as a student? This will create a user account and student profile.`)) return
     try {
-        await api.post(`/admissions/${a.id}/enroll`)
-        toast.add({ title: 'Student enrolled successfully!', description: 'Account created with default password: password', color: 'success' })
+        const res = await api.post(`/admissions/${a.id}/enroll`)
+        credentials.value = { name: a.full_name, ...res.credentials }
         fetchAdmissions(); fetchStats()
-    } catch (err) {
-        toast.add({ title: err?.data?.message || 'Enrollment failed', color: 'error' })
-    }
+    } catch { /* useApi already shows the error */ }
 }
 
 onMounted(async () => {
