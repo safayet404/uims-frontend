@@ -245,7 +245,7 @@
                                     <p v-if="errors.employee_id" class="text-red-500 text-xs mt-1">{{ errors.employee_id
                                     }}</p>
                                 </div>
-                                <div>
+                                <div v-if="isUniversity">
                                     <label class="block text-xs font-medium text-gray-600 mb-1">Department *</label>
                                     <select v-model="form.department_id"
                                         class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900">
@@ -493,6 +493,7 @@ import { useUiStore } from '~/stores/ui'
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 
 const ui = useUiStore()
+const { isUniversity } = useInstitution()
 const api = useApi()
 const toast = useToast()
 
@@ -628,7 +629,10 @@ const handleSubmit = async () => {
     if (!form.name) { errors.value.name = 'Required'; return }
     if (!form.email) { errors.value.email = 'Required'; return }
     if (!form.employee_id) { errors.value.employee_id = 'Required'; return }
-    if (!form.department_id) { errors.value.department_id = 'Required'; return }
+    // Departments and programs only exist at universities
+    if (isUniversity.value) {
+        if (!form.department_id) { errors.value.department_id = 'Required'; return }
+    }
     if (!form.designation) { errors.value.designation = 'Required'; return }
     saving.value = true
     try {

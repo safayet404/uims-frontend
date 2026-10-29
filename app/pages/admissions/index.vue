@@ -538,6 +538,7 @@ import { useUiStore } from '~/stores/ui'
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 
 const ui = useUiStore()
+const { isUniversity } = useInstitution()
 const api = useApi()
 const toast = useToast()
 
@@ -632,7 +633,10 @@ const handleSubmit = async () => {
     errors.value = {}
     if (!form.first_name) { errors.value.first_name = 'Required'; return }
     if (!form.email) { errors.value.email = 'Required'; return }
-    if (!form.department_id) { errors.value.department_id = 'Required'; return }
+    // Departments and programs only exist at universities
+    if (isUniversity.value) {
+        if (!form.department_id) { errors.value.department_id = 'Required'; return }
+    }
     saving.value = true
     try {
         await api.post('/admissions', form)

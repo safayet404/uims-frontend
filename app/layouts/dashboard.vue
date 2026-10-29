@@ -88,8 +88,12 @@ const toast = useToast()
 
 const isActive = (path) => route.path.startsWith(path)
 
+const { type: institutionType, terms } = useInstitution()
+
 const canSee = (item) => {
   if (!auth.isAuthenticated) return false
+  // Items that only make sense for some kinds of institution
+  if (item.only && !item.only.includes(institutionType.value)) return false
   if (item.exceptRoles && auth.hasRole(item.exceptRoles)) return false
   if (!item.permission && !item.roles) return true
   if (item.roles) return auth.hasRole(item.roles)
@@ -113,37 +117,40 @@ const navGroups = computed(() => [
   {
     label: 'My Studies',
     items: [
-      { label: 'My Courses', to: '/my/courses', icon: 'i-heroicons-book-open', roles: ['student'] },
-      { label: 'Results', to: '/my/results', icon: 'i-heroicons-academic-cap', roles: ['student'] },
-      { label: 'Class Routine', to: '/my/routine', icon: 'i-heroicons-calendar-days', roles: ['student'] },
+      { label: 'My Courses', to: '/my/courses', icon: 'i-heroicons-book-open', roles: ['student'], only: ['university'] },
+      { label: 'Results', to: '/my/results', icon: 'i-heroicons-academic-cap', roles: ['student'], only: ['university'] },
+      { label: 'Class Routine', to: '/my/routine', icon: 'i-heroicons-calendar-days', roles: ['student'], only: ['university'] },
       { label: 'My Fees', to: '/my/fees', icon: 'i-heroicons-banknotes', roles: ['student'] },
     ]
   },
   {
     label: 'Teaching',
     items: [
-      { label: 'My Classes', to: '/teach/courses', icon: 'i-heroicons-academic-cap', roles: ['faculty'] },
-      { label: 'Teaching Routine', to: '/teach/routine', icon: 'i-heroicons-calendar-days', roles: ['faculty'] },
+      { label: 'My Classes', to: '/teach/courses', icon: 'i-heroicons-academic-cap', roles: ['faculty'], only: ['university'] },
+      { label: 'Teaching Routine', to: '/teach/routine', icon: 'i-heroicons-calendar-days', roles: ['faculty'], only: ['university'] },
     ]
   },
   {
     label: 'Academic',
     items: [
       { label: 'Students', to: '/students', icon: 'i-heroicons-user-group', permission: 'students.read' },
-      { label: 'Faculty', to: '/faculty', icon: 'i-heroicons-briefcase', permission: 'faculty.read' },
-      { label: 'Departments', to: '/departments', icon: 'i-heroicons-building-office', permission: 'departments.read' },
-      { label: 'Programs', to: '/programs', icon: 'i-heroicons-book-open', permission: 'programs.read' },
-      { label: 'Courses', to: '/courses', icon: 'i-heroicons-clipboard-document-list', permission: 'courses.read' },
+      { label: terms.value.teachers, to: '/faculty', icon: 'i-heroicons-briefcase', permission: 'faculty.read' },
+      { label: 'Classes & Sections', to: '/classes', icon: 'i-heroicons-squares-2x2', permission: 'classes.read', only: ['school'] },
+      { label: 'Batches', to: '/batches', icon: 'i-heroicons-rectangle-group', permission: 'classes.read', only: ['coaching'] },
+      { label: 'Subjects', to: '/subjects', icon: 'i-heroicons-book-open', permission: 'classes.read', only: ['school', 'coaching'] },
+      { label: 'Departments', to: '/departments', icon: 'i-heroicons-building-office', permission: 'departments.read', only: ['university'] },
+      { label: 'Programs', to: '/programs', icon: 'i-heroicons-book-open', permission: 'programs.read', only: ['university'] },
+      { label: 'Courses', to: '/courses', icon: 'i-heroicons-clipboard-document-list', permission: 'courses.read', only: ['university'] },
     ]
   },
   {
     label: 'Operations',
     items: [
-      { label: 'Enrollments', to: '/enrollments', icon: 'i-heroicons-pencil-square', permission: 'enrollments.read' },
-      { label: 'Timetable', to: '/timetable', icon: 'i-heroicons-calendar', permission: 'timetable.read', exceptRoles: ['student', 'faculty'] },
-      { label: 'Attendance', to: '/attendance', icon: 'i-heroicons-check-circle', permission: 'attendance.read', exceptRoles: ['faculty'] },
-      { label: 'Exams', to: '/exams', icon: 'i-heroicons-document-text', permission: 'exams.read' },
-      { label: 'Grades', to: '/grades', icon: 'i-heroicons-chart-bar', permission: 'grades.read', exceptRoles: ['faculty'] },
+      { label: 'Enrollments', to: '/enrollments', icon: 'i-heroicons-pencil-square', permission: 'enrollments.read', only: ['university'] },
+      { label: 'Timetable', to: '/timetable', icon: 'i-heroicons-calendar', permission: 'timetable.read', exceptRoles: ['student', 'faculty'], only: ['university'] },
+      { label: 'Attendance', to: '/attendance', icon: 'i-heroicons-check-circle', permission: 'attendance.read', exceptRoles: ['faculty'], only: ['university'] },
+      { label: 'Exams', to: '/exams', icon: 'i-heroicons-document-text', permission: 'exams.read', only: ['university'] },
+      { label: 'Grades', to: '/grades', icon: 'i-heroicons-chart-bar', permission: 'grades.read', exceptRoles: ['faculty'], only: ['university'] },
     ]
   },
   {
