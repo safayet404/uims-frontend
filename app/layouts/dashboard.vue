@@ -120,6 +120,9 @@ const navGroups = computed(() => [
       { label: 'My Courses', to: '/my/courses', icon: 'i-heroicons-book-open', roles: ['student'], only: ['university'] },
       { label: 'Results', to: '/my/results', icon: 'i-heroicons-academic-cap', roles: ['student'], only: ['university'] },
       { label: 'Class Routine', to: '/my/routine', icon: 'i-heroicons-calendar-days', roles: ['student'], only: ['university'] },
+      { label: isCoaching.value ? 'My Batches' : 'My Class', to: '/my/class', icon: 'i-heroicons-user-group', roles: ['student'], only: ['school', 'coaching'] },
+      { label: 'Attendance', to: '/my/attendance', icon: 'i-heroicons-check-circle', roles: ['student'], only: ['school', 'coaching'] },
+      { label: 'Results', to: '/my/exam-results', icon: 'i-heroicons-academic-cap', roles: ['student'], only: ['school', 'coaching'] },
       { label: 'My Fees', to: '/my/fees', icon: 'i-heroicons-banknotes', roles: ['student'] },
     ]
   },

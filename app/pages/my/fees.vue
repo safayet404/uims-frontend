@@ -38,6 +38,8 @@
               <span class="capitalize">{{ p.method?.replace('_', ' ') }}</span>
               <span>{{ p.date }}</span>
               <span class="text-gray-400">{{ p.transaction_id }}</span>
+              <button type="button" class="text-emerald-700 hover:underline" :aria-label="`Download receipt ${p.transaction_id}`" @click="pdf.download(`/fees/payments/${p.id}/receipt`, `receipt-${p.transaction_id}.pdf`)">Receipt</button>
+              <button type="button" class="text-emerald-700 hover:underline" :aria-label="`Print receipt ${p.transaction_id}`" @click="pdf.print(`/fees/payments/${p.id}/receipt?inline=1`)">Print</button>
             </li>
           </ul>
         </li>
@@ -55,6 +57,7 @@ definePageMeta({ layout: 'dashboard', middleware: 'auth', roles: ['student'] })
 
 useUiStore().setPageTitle('My Fees')
 const api = useApi()
+const pdf = usePdf()
 const { money, invoiceTone } = useAcademicFormat()
 
 const data = ref(null)

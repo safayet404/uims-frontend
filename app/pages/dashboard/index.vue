@@ -1,5 +1,6 @@
 <template>
-  <StudentDashboard v-if="auth.isStudent" />
+  <StudentDashboard v-if="auth.isStudent && isUniversity" />
+  <SchoolStudentDashboard v-else-if="auth.isStudent" />
   <FacultyDashboard v-else-if="auth.isFaculty && isUniversity" />
   <div v-else-if="auth.isFaculty" class="space-y-4">
     <h2 class="text-xl font-bold text-gray-900">Good {{ timeOfDay }}, {{ firstName }} 👋</h2>
@@ -117,7 +118,7 @@ const dashStats = ref({
   today_activity: 0,
 })
 
-const firstName = computed(() => auth.user?.name?.split(' ')[0] || '')
+const firstName = computed(() => auth.user?.name?.replace(/^(Dr|Prof)\.?\s+/i, '').split(' ')[0] || '')
 const today = computed(() => dayjs().format('dddd, MMMM D YYYY'))
 const timeOfDay = computed(() => {
   const h = new Date().getHours()
