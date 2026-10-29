@@ -128,6 +128,7 @@ const navGroups = computed(() => [
     items: [
       { label: 'My Classes', to: '/teach/courses', icon: 'i-heroicons-academic-cap', roles: ['faculty'], only: ['university'] },
       { label: 'Teaching Routine', to: '/teach/routine', icon: 'i-heroicons-calendar-days', roles: ['faculty'], only: ['university'] },
+      { label: `My ${terms.value.groups}`, to: '/my-groups', icon: 'i-heroicons-squares-2x2', roles: ['faculty'], only: ['school', 'coaching'] },
     ]
   },
   {

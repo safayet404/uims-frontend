@@ -1,6 +1,10 @@
 <template>
   <StudentDashboard v-if="auth.isStudent" />
-  <FacultyDashboard v-else-if="auth.isFaculty" />
+  <FacultyDashboard v-else-if="auth.isFaculty && isUniversity" />
+  <div v-else-if="auth.isFaculty" class="space-y-4">
+    <h2 class="text-xl font-bold text-gray-900">Good {{ timeOfDay }}, {{ firstName }} 👋</h2>
+    <TeachingGroups />
+  </div>
   <div v-else class="space-y-6">
     <!-- Welcome banner -->
     <div class="bg-linear-to-r from-indigo-600 to-blue-600 rounded-2xl p-6 text-white">
@@ -95,6 +99,7 @@ dayjs.extend(relativeTime)
 definePageMeta({ layout: 'dashboard', middleware: 'auth' })
 
 const auth = useAuthStore()
+const { isUniversity } = useInstitution()
 const ui = useUiStore()
 const api = useApi()
 

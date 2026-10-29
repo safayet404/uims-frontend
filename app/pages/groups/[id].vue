@@ -103,6 +103,101 @@
       </div>
     </template>
 
+    <!-- Take attendance -->
+    <div v-if="group && tab === 'attendance' && canTake" class="bg-white rounded-xl border border-gray-200">
+      <div class="flex flex-wrap items-end gap-4 p-5 border-b border-gray-100">
+        <label class="text-sm">
+          <span class="block text-gray-600 mb-1">Date</span>
+          <input v-model="attendanceDate" type="date" :max="todayIso" class="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </label>
+        <label class="text-sm flex-1 min-w-48">
+          <span class="block text-gray-600 mb-1">Note (optional)</span>
+          <input v-model="attendanceNote" maxlength="255" placeholder="e.g. Sports day" class="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </label>
+        <button type="button" class="text-sm font-medium text-emerald-700 hover:underline pb-2" @click="markAll('present')">Mark all present</button>
+      </div>
+      <p v-if="sheet?.taken" class="mx-5 mt-4 rounded-lg bg-sky-50 px-4 py-2 text-sm text-sky-800">
+        Already taken{{ sheet.taken_by ? ` by ${sheet.taken_by}` : '' }}. Saving will update it.
+      </p>
+      <TableSkeleton v-if="!sheet" :rows="5" :cols="3" />
+      <p v-else-if="!sheet.students.length" class="p-12 text-center text-gray-500">No students yet.</p>
+      <ul v-else class="divide-y divide-gray-100">
+        <li v-for="s in sheet.students" :key="s.student_profile_id" class="flex flex-wrap items-center gap-3 px-5 py-3">
+          <span class="w-10 text-sm font-semibold text-gray-500">{{ s.roll_number }}</span>
+          <div class="flex-1 min-w-40">
+            <p class="text-sm font-medium text-gray-900">{{ s.name }}</p>
+            <p class="text-xs text-gray-400">{{ s.student_id }}</p>
+          </div>
+          <div class="flex gap-1" role="radiogroup" :aria-label="`Attendance for ${s.name}`">
+            <button v-for="opt in statusOptions" :key="opt.value" type="button" role="radio" :aria-checked="s.status === opt.value" :aria-label="opt.label" :title="opt.label"
+              :class="['w-10 h-9 rounded-lg text-sm font-semibold transition-colors', s.status === opt.value ? opt.active : 'bg-gray-50 text-gray-400 hover:bg-gray-100']"
+              @click="s.status = opt.value">
+              {{ opt.short }}
+            </button>
+          </div>
+        </li>
+      </ul>
+      <div v-if="sheet?.students.length" class="flex flex-wrap items-center justify-between gap-3 p-5 border-t border-gray-100">
+        <p class="text-sm text-gray-500">
+          <span v-for="opt in statusOptions" :key="opt.value" class="mr-3">{{ opt.label }}: <b class="text-gray-900">{{ counts[opt.value] || 0 }}</b></span>
+        </p>
+        <button type="button" :disabled="savingAttendance" class="px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-lg hover:bg-emerald-500 disabled:opacity-50" @click="saveAttendance">
+          {{ savingAttendance ? 'Saving…' : 'Save attendance' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Monthly report -->
+    <div v-if="group && tab === 'report'" class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+      <div class="flex flex-wrap items-end justify-between gap-4 p-5 border-b border-gray-100">
+        <label class="text-sm">
+          <span class="block text-gray-600 mb-1">Month</span>
+          <input v-model="reportMonth" type="month" class="rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        </label>
+        <p v-if="report" class="text-sm text-gray-500">{{ report.days_held }} {{ report.days_held === 1 ? 'day' : 'days' }} taken this month</p>
+      </div>
+      <p v-if="reportDenied" class="p-12 text-center text-gray-500">Only this {{ group.kind }}'s teachers can see its attendance.</p>
+      <TableSkeleton v-else-if="!report" :rows="5" :cols="5" />
+      <p v-else-if="!report.students.length" class="p-12 text-center text-gray-500">No students yet.</p>
+      <div v-else class="overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="text-left text-xs text-gray-500 uppercase tracking-wide bg-gray-50/60">
+              <th class="px-5 py-3 font-medium w-16">Roll</th>
+              <th class="px-5 py-3 font-medium">Student</th>
+              <th class="px-3 py-3 font-medium text-center">Present</th>
+              <th class="px-3 py-3 font-medium text-center">Late</th>
+              <th class="px-3 py-3 font-medium text-center">Absent</th>
+              <th class="px-3 py-3 font-medium text-center">Leave</th>
+              <th class="px-5 py-3 font-medium w-44">Attendance</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-100">
+            <tr v-for="r in report.students" :key="r.student_profile_id">
+              <td class="px-5 py-2 text-gray-500">{{ r.roll_number }}</td>
+              <td class="px-5 py-2">
+                <p class="font-medium text-gray-900">{{ r.name }}</p>
+                <p class="text-xs text-gray-400">{{ r.student_id }}</p>
+              </td>
+              <td class="px-3 py-2 text-center">{{ r.present }}</td>
+              <td class="px-3 py-2 text-center">{{ r.late }}</td>
+              <td class="px-3 py-2 text-center">{{ r.absent }}</td>
+              <td class="px-3 py-2 text-center">{{ r.leave }}</td>
+              <td class="px-5 py-2">
+                <div v-if="r.percent !== null" class="flex items-center gap-2">
+                  <div class="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                    <div :class="['h-full rounded-full', attendanceTone(r.percent).bar]" :style="{ width: `${r.percent}%` }" />
+                  </div>
+                  <span :class="['text-xs font-semibold w-10 text-right', attendanceTone(r.percent).text]">{{ r.percent }}%</span>
+                </div>
+                <span v-else class="text-xs text-gray-400">—</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Add students -->
     <Teleport to="body">
       <div v-if="addOpen" class="fixed inset-0 z-100 flex items-center justify-center p-4 bg-black/50" @click.self="addOpen = false">
@@ -154,8 +249,13 @@ const { can } = usePermission()
 const canManage = computed(() => can('classes.manage'))
 
 const group = ref(null)
-const tab = ref('students')
-const tabs = [{ key: 'students', label: 'Students' }, { key: 'subjects', label: 'Subjects & teachers' }]
+const tab = ref(['students', 'subjects', 'attendance', 'report'].includes(route.query.tab) ? route.query.tab : 'students')
+const tabs = computed(() => [
+  { key: 'students', label: 'Students' },
+  { key: 'subjects', label: 'Subjects & teachers' },
+  ...(canTake.value ? [{ key: 'attendance', label: 'Take attendance' }] : []),
+  { key: 'report', label: 'Monthly report' },
+])
 const teachers = ref([])
 const levels = ref([])
 const editOpen = ref(false)
@@ -248,6 +348,69 @@ const remove = async () => {
   } catch { /* useApi already shows the error */ }
 }
 
+// ── Attendance ──────────────────────────────────────────────
+const { attendanceTone } = useAcademicFormat()
+const todayIso = new Date().toISOString().slice(0, 10)
+const canTake = ref(false)
+const sheet = ref(null)
+const attendanceDate = ref(todayIso)
+const attendanceNote = ref('')
+const savingAttendance = ref(false)
+const statusOptions = [
+  { value: 'present', short: 'P', label: 'Present', active: 'bg-emerald-600 text-white' },
+  { value: 'absent', short: 'A', label: 'Absent', active: 'bg-red-500 text-white' },
+  { value: 'late', short: 'L', label: 'Late', active: 'bg-amber-500 text-white' },
+  { value: 'leave', short: 'Lv', label: 'Leave', active: 'bg-sky-500 text-white' },
+]
+const counts = computed(() => (sheet.value?.students || []).reduce((acc, s) => ({ ...acc, [s.status]: (acc[s.status] || 0) + 1 }), {}))
+const markAll = status => (sheet.value?.students || []).forEach((s) => { s.status = status })
+
+// Also tells us whether this user may take attendance here (403 otherwise)
+const loadSheet = async () => {
+  sheet.value = null
+  try {
+    sheet.value = (await api.get(`/student-groups/${route.params.id}/attendance`, { date: attendanceDate.value })).data
+    attendanceNote.value = sheet.value.note || ''
+    canTake.value = true
+  } catch {
+    canTake.value = false
+    if (tab.value === 'attendance') tab.value = 'report'
+  }
+}
+
+const saveAttendance = async () => {
+  savingAttendance.value = true
+  try {
+    const res = await api.put(`/student-groups/${group.value.id}/attendance`, {
+      date: attendanceDate.value,
+      note: attendanceNote.value || null,
+      records: sheet.value.students.map(s => ({ student_profile_id: s.student_profile_id, status: s.status })),
+    })
+    toast.add({ title: res.message, description: `Present ${res.summary.present} · Absent ${res.summary.absent} · Late ${res.summary.late} · Leave ${res.summary.leave}`, color: 'success' })
+    sheet.value.taken = true
+    report.value = null
+  } catch { /* useApi already shows the error */ } finally {
+    savingAttendance.value = false
+  }
+}
+
+const reportMonth = ref(todayIso.slice(0, 7))
+const report = ref(null)
+const reportDenied = ref(false)
+const loadReport = async () => {
+  report.value = null
+  reportDenied.value = false
+  try {
+    report.value = (await api.get(`/student-groups/${route.params.id}/attendance/report`, { month: reportMonth.value })).data
+  } catch (err) {
+    reportDenied.value = err?.response?.status === 403
+  }
+}
+
+watch(attendanceDate, () => { if (canTake.value) loadSheet() })
+watch(reportMonth, loadReport)
+watch(tab, (t) => { if (t === 'report' && !report.value) loadReport() })
+
 // ── Loading ─────────────────────────────────────────────────
 const load = async () => {
   try {
@@ -260,6 +423,8 @@ const load = async () => {
 onMounted(async () => {
   await load()
   if (!group.value) return
+  await loadSheet()
+  if (tab.value === 'report') loadReport()
   const subjectFilter = group.value.kind === 'section' ? { class_level_id: group.value.class_level?.id, stream: group.value.stream || undefined } : {}
   const requests = [api.get('/subjects', subjectFilter).then((r) => { allSubjects.value = r.data })]
   if (canManage.value) {
