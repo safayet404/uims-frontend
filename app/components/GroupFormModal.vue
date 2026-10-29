@@ -54,11 +54,11 @@
             <span class="block text-xs font-medium text-gray-600 mb-1">Seats</span>
             <input v-model.number="form.capacity" type="number" min="1" placeholder="No limit" :class="field">
           </label>
+          <label class="block text-sm">
+            <span class="block text-xs font-medium text-gray-600 mb-1">Monthly fee (৳)</span>
+            <input v-model.number="form.monthly_fee" type="number" min="0" step="50" placeholder="Not billed monthly" :class="field">
+          </label>
           <template v-if="kind === 'batch'">
-            <label class="block text-sm">
-              <span class="block text-xs font-medium text-gray-600 mb-1">Monthly fee (৳)</span>
-              <input v-model.number="form.monthly_fee" type="number" min="0" step="50" :class="field">
-            </label>
             <label class="block text-sm">
               <span class="block text-xs font-medium text-gray-600 mb-1">Starts</span>
               <input v-model="form.starts_on" type="date" :class="field">

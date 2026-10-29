@@ -147,6 +147,9 @@
       </div>
     </div>
 
+    <!-- Monthly fees -->
+    <GroupFees v-if="group && tab === 'fees'" :group-id="group.id" />
+
     <!-- Monthly report -->
     <div v-if="group && tab === 'report'" class="bg-white rounded-xl border border-gray-200 overflow-hidden">
       <div class="flex flex-wrap items-end justify-between gap-4 p-5 border-b border-gray-100">
@@ -249,12 +252,13 @@ const { can } = usePermission()
 const canManage = computed(() => can('classes.manage'))
 
 const group = ref(null)
-const tab = ref(['students', 'subjects', 'attendance', 'report'].includes(route.query.tab) ? route.query.tab : 'students')
+const tab = ref(['students', 'subjects', 'attendance', 'report', 'fees'].includes(route.query.tab) ? route.query.tab : 'students')
 const tabs = computed(() => [
   { key: 'students', label: 'Students' },
   { key: 'subjects', label: 'Subjects & teachers' },
   ...(canTake.value ? [{ key: 'attendance', label: 'Take attendance' }] : []),
   { key: 'report', label: 'Monthly report' },
+  ...(can('fees.read') ? [{ key: 'fees', label: 'Fees' }] : []),
 ])
 const teachers = ref([])
 const levels = ref([])

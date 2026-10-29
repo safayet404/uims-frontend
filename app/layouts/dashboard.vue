@@ -158,6 +158,7 @@ const navGroups = computed(() => [
   {
     label: 'Finance',
     items: [
+      { label: 'Monthly Fees', to: '/monthly-fees', icon: 'i-heroicons-calendar-days', permission: 'fees.read', only: ['school', 'coaching'] },
       { label: 'Fee Management', to: '/fees', icon: 'i-heroicons-banknotes', permission: 'fees.read' },
     ]
   },
