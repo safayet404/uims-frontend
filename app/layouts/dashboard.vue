@@ -88,7 +88,7 @@ const toast = useToast()
 
 const isActive = (path) => route.path.startsWith(path)
 
-const { type: institutionType, terms } = useInstitution()
+const { type: institutionType, isCoaching, terms } = useInstitution()
 
 const canSee = (item) => {
   if (!auth.isAuthenticated) return false
@@ -139,6 +139,7 @@ const navGroups = computed(() => [
       { label: 'Classes & Sections', to: '/classes', icon: 'i-heroicons-squares-2x2', permission: 'classes.read', only: ['school'] },
       { label: 'Batches', to: '/batches', icon: 'i-heroicons-rectangle-group', permission: 'classes.read', only: ['coaching'] },
       { label: 'Subjects', to: '/subjects', icon: 'i-heroicons-book-open', permission: 'classes.read', only: ['school', 'coaching'] },
+      { label: isCoaching.value ? 'Tests & Results' : 'Exams & Results', to: '/term-exams', icon: 'i-heroicons-document-chart-bar', permission: 'grades.read', exceptRoles: ['student'], only: ['school', 'coaching'] },
       { label: 'Departments', to: '/departments', icon: 'i-heroicons-building-office', permission: 'departments.read', only: ['university'] },
       { label: 'Programs', to: '/programs', icon: 'i-heroicons-book-open', permission: 'programs.read', only: ['university'] },
       { label: 'Courses', to: '/courses', icon: 'i-heroicons-clipboard-document-list', permission: 'courses.read', only: ['university'] },

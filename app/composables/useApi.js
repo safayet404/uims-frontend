@@ -10,7 +10,9 @@ export const useApi = () => {
       // A forbidden background read (e.g. a stats panel the role cannot see)
       // is handled by the page; only report refused actions
       if (!(err?.response?.status === 403 && method === 'GET')) {
-        const msg = err?.data?.message || err?.message || 'Something went wrong.'
+        // Validation errors: show the first actual reason, not the generic "Validation failed."
+        const firstError = Object.values(err?.data?.errors || {})[0]?.[0]
+        const msg = firstError || err?.data?.message || err?.message || 'Something went wrong.'
         toast.add({ title: err?.response?.status === 403 ? 'Not allowed' : 'Error', description: msg, color: 'error' })
       }
       throw err
